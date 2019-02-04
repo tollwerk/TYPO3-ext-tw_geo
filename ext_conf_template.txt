@@ -1,0 +1,26 @@
+debug {
+    # cat=basic/110; type=string; label=Debug IP Addresses:Comma separated list of IP adresses for which to return the debug position.
+    ip = 127.0.0.1
+
+    # cat=basic/120; type=string; label=Debug Country Code
+    countryCode = DE
+
+    # cat=basic/121; type=string; label=Debug Country Name
+    countryName = Deutschland
+
+    # cat=basic/122; type=string; label=Debug Region
+    region = Bayern
+
+    # cat=basic/123; type=string; label=Debug City
+    locality = Nürnberg
+
+    # cat=basic/124; type=string; label=Debug Postal Code
+    postalCode = 90411
+
+    # cat=basic/125; type=string; label=Debug Latitude
+    latitude = 49.475141
+
+    # cat=basic/126; type=string; label=Debug Longitude
+    longitude = 11.106845
+}
+
