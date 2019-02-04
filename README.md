@@ -1,5 +1,10 @@
 # TYPO3-ext-tw_geo
 
+Right now this extension provides the following features
+ * Get the user position based on the users IP address
+ 
+All features are implemented as TYPO3 services so there is a well defined fallback behaviour.
+
 ## Debug configuration
 
 In TYPO3 backend go to **Admin Tools > Settings > Extension Configuration > tw_geo**.
