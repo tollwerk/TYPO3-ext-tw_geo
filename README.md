@@ -17,7 +17,7 @@ Especially useful when devloping on  a local machine where no geolocation is pos
 ## Usage
 
 Start by getting the instance of the GeoUtility class. 
-You can do that multiple times - it's a singleton so you will only the the same instance every time. 
+You can do that multiple times - it's a singleton so you will only get the same instance every time. 
 
 ### Geolocation
 
