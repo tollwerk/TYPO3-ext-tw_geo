@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 class GeoUtility implements SingletonInterface
 {
@@ -60,22 +61,38 @@ class GeoUtility implements SingletonInterface
 
     public function __construct()
     {
-        // Get extension configuration
-        $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
-
-        // If user IP is one of the debug IP addresses, return debug position1
-        $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
-        if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
-            $this->debug = true;
-            $this->debugPosition = new Position();
-            $this->debugPosition->setDebug(true);
-            $this->debugPosition->setCountryCode($backendConfiguration['debug']['countryCode']);
-            $this->debugPosition->setCountryName($backendConfiguration['debug']['countryName']);
-            $this->debugPosition->setRegion($backendConfiguration['debug']['region']);
-            $this->debugPosition->setLocality($backendConfiguration['debug']['locality']);
-            $this->debugPosition->setPostalCode($backendConfiguration['debug']['postalCode']);
-            $this->debugPosition->setLatitude($backendConfiguration['debug']['latitude']);
-            $this->debugPosition->setLongitude($backendConfiguration['debug']['longitude']);
+        // Get extension configuration TODO: Implement better way to retrieve backend configuration depending on TYPO3 version
+        if (class_exists('\TYPO3\CMS\Core\Configuration\ExtensionConfiguration')) {
+            // For TYPO3 v9
+            $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
+            if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+                $this->debug = true;
+                $this->debugPosition = new Position();
+                $this->debugPosition->setDebug(true);
+                $this->debugPosition->setCountryCode($backendConfiguration['debug']['countryCode']);
+                $this->debugPosition->setCountryName($backendConfiguration['debug']['countryName']);
+                $this->debugPosition->setRegion($backendConfiguration['debug']['region']);
+                $this->debugPosition->setLocality($backendConfiguration['debug']['locality']);
+                $this->debugPosition->setPostalCode($backendConfiguration['debug']['postalCode']);
+                $this->debugPosition->setLatitude($backendConfiguration['debug']['latitude']);
+                $this->debugPosition->setLongitude($backendConfiguration['debug']['longitude']);
+            }
+        } else {
+            // For TYPO3 v8
+            $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationUtility::class)->getCurrentConfiguration('tw_geo');
+            $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug.ip']['value']);
+            if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+                $this->debug = true;
+                $this->debugPosition = new Position();
+                $this->debugPosition->setDebug(true);
+                $this->debugPosition->setCountryCode($backendConfiguration['debug.countryCode']['value']);
+                $this->debugPosition->setCountryName($backendConfiguration['debug.countryName']['value']);
+                $this->debugPosition->setRegion($backendConfiguration['debug.region']['value']);
+                $this->debugPosition->setLocality($backendConfiguration['debug.locality']['value']);
+                $this->debugPosition->setPostalCode($backendConfiguration['debug.postalCode']['value']);
+                $this->debugPosition->setLatitude($backendConfiguration['debug.latitude']['value']);
+                $this->debugPosition->setLongitude($backendConfiguration['debug.longitude']['value']);
+            }
         }
     }
 
@@ -123,7 +140,7 @@ class GeoUtility implements SingletonInterface
      */
     public function getGeoLocation(): ?Position
     {
-        if($this->debugPosition){
+        if ($this->debugPosition) {
             return $this->debugPosition;
         }
 

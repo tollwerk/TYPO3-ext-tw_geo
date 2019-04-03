@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2019-04-03T15:40:00Z" product-name="tw_geo">
+        <header/>
+        <body>
+            <trans-unit id="file">
+                <source>Files and folders</source>
+            </trans-unit>
+            <trans-unit id="file.layoutRootPath">
+                <source>Layout Root Path</source>
+            </trans-unit>
+            <trans-unit id="file.templateRootPath">
+                <source>Template Root Path</source>
+            </trans-unit>
+            <trans-unit id="file.partialRootPath">
+                <source>Partial Root Path</source>
+            </trans-unit>
+            <trans-unit id="plugin.debug">
+                <source>tollwerk Geo Tools | Debug</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

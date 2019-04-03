@@ -1,0 +1,12 @@
+# customsubcategory=file=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file
+
+plugin.tw_geo {
+    view {
+        # cat=plugin.tx_geo/file/10; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file.templateRootPath
+        templateRootPath = EXT:tw_afg/Resources/Private/Templates/
+        # cat=plugin.tx_geo/file/11; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file.partialRootPath
+        partialRootPath = EXT:tw_afg/Resources/Private/Partials/
+        # cat=plugin.tx_geo/file/12; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file.layoutRootPath
+        layoutRootPath = EXT:tw_afg/Resources/Private/Layouts/
+    }
+}
