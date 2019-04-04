@@ -51,12 +51,19 @@ class DebugController extends ActionController
     }
 
     /**
-     * Get and show the geolocation of the frontend user
+     * Test geolocation services
      *
      * @param string $queryString
      */
-    public function geoLocationAction(String $queryString = null){
+    public function geolocationAction(){
         $this->view->assign('geolocation', $this->geoUtility->getGeoLocation());
+    }
+    /**
+     * Test geocoding services
+     *
+     * @param string $queryString
+     */
+    public function geocodingAction(String $queryString = null){
         $this->view->assign('geocode', $this->geoUtility->geocode($queryString));
     }
 }

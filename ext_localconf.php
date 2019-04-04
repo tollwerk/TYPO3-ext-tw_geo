@@ -60,8 +60,8 @@ call_user_func(
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'Tollwerk.TwGeo',
             'Debug',
-            ['Debug' => 'geoLocation'],
-            ['Debug' => 'geoLocation']
+            ['Debug' => 'geolocation, geocoding'],
+            ['Debug' => 'geolocation, geocoding']
         );
     }
 );

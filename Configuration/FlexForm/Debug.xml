@@ -1,0 +1,36 @@
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <main>
+            <ROOT>
+                <type>array</type>
+                <el>
+                    <switchableControllerActions>
+                        <TCEforms>
+                            <label>LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:plugin.debug.switchableControllerActions</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <default>Debug->geolocation</default>
+                                <items>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:plugin.debug.switchableControllerActions.geolocation</numIndex>
+                                        <numIndex index="1">Debug->geolocation</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:plugin.debug.switchableControllerActions.geocoding</numIndex>
+                                        <numIndex index="1">Debug->geocoding</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </switchableControllerActions>
+                </el>
+            </ROOT>
+        </main>
+    </sheets>
+</T3DataStructure>
+
+

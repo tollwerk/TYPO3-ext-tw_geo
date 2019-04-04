@@ -4,11 +4,8 @@
 
 --></f:comment>
 <html xmlns:f="https://xsd.helhum.io/ns/typo3/cms-fluid/master/ViewHelpers">
-    <strong>Geolocation</strong><br />
-    <f:debug inline="1">{geolocation}</f:debug>
-
     <strong>Geocoding</strong><br />
-    <f:form action="geoLocation">
+    <f:form  action="geocoding" controller="Debug" pluginName="Debug" extensionName="TwGeo">
         <f:form.textfield name="queryString" />
         <f:form.submit value="Submit"/>
     </f:form>

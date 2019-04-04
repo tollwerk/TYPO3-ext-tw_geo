@@ -18,6 +18,15 @@
             <trans-unit id="plugin.debug">
                 <source>tollwerk Geo Tools | Debug</source>
             </trans-unit>
+            <trans-unit id="plugin.debug.switchableControllerActions">
+                <source>Debug feature</source>
+            </trans-unit>
+            <trans-unit id="plugin.debug.switchableControllerActions.geolocation">
+                <source>Geolocation: Get Position by user IP</source>
+            </trans-unit>
+            <trans-unit id="plugin.debug.switchableControllerActions.geocoding">
+                <source>Geocoding: Get Position by address</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
