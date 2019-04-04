@@ -18,7 +18,7 @@ call_user_func(
             'Tollwerk.TwGeo',
             'Debug',
             'LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:plugin.debug',
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('tw_geo').'Resources/Public/Icons/Backend/Earth.png'
+            'EXT:tw_geo/Resources/Public/Icons/Backend/Earth.svg'
         );
 
         // Register flexforms for plugins
