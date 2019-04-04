@@ -39,6 +39,14 @@ call_user_func(
                 'className' => \Tollwerk\TwGeo\Service\Geolocation\GeoiplookupService::class
             ]
         );
+
+        // Configure plugins
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'Tollwerk.TwGeo',
+            'Debug',
+            ['Debug' => 'geoLocation'],
+            ['Debug' => 'geoLocation']
+        );
     }
 );
 

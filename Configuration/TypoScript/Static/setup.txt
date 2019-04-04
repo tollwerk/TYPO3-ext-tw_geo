@@ -1,0 +1,8 @@
+plugin.tw_geo {
+    view {
+        templateRootPath = {$plugin.tx_twgeo.view.templateRootPath}
+        partialRootPath = {$plugin.tx_twgeo.view.partialRootPath}
+        layoutRootPath = {$plugin.tx_twgeo.view.layoutRootPath}
+    }
+}
+
