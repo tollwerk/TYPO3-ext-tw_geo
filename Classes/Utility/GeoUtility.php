@@ -65,6 +65,7 @@ class GeoUtility implements SingletonInterface
         if (class_exists('\TYPO3\CMS\Core\Configuration\ExtensionConfiguration')) {
             // For TYPO3 v9
             $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
+            $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
             if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
                 $this->debug = true;
                 $this->debugPosition = new Position();
