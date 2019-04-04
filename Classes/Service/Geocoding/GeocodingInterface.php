@@ -24,39 +24,17 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Tollwerk\TwGeo\Controller;
+namespace Tollwerk\TwGeo\Service\Geocoding;
 
+use Tollwerk\TwGeo\Domain\Model\Position;
 
-use Tollwerk\TwGeo\Utility\GeoUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
-/**
- * Class DebugController
- *
- * Test tw_geo features for frontend and backend
- *
- * @package Tollwerk\TwGeo\Controller
- */
-class DebugController extends ActionController
+interface GeocodingInterface
 {
-    /** @var GeoUtility */
-    protected $geoUtility = null;
-
     /**
-     * @param GeoUtility $geoUtility
-     */
-    public function injectGeoUtility(GeoUtility $geoUtility){
-        $this->geoUtility = $geoUtility;
-    }
-
-    /**
-     * Get and show the geolocation of the frontend user
-     *
+     * Get geocoding result for address string
      * @param string $queryString
+     *
+     * @return null|Position
      */
-    public function geoLocationAction(String $queryString = null){
-        $this->view->assign('geolocation', $this->geoUtility->getGeoLocation());
-        $this->view->assign('geocode', $this->geoUtility->geocode($queryString));
-    }
+    public function geocode(string $queryString = null): ?Position;
 }

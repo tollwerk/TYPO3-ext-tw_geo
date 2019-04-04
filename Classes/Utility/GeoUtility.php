@@ -26,15 +26,13 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
-use Doctrine\Common\Util\Debug;
+use Tollwerk\TwGeo\Service\Geocoding\GeocodingInterface;
 use Tollwerk\TwGeo\Service\Geolocation\GeolocationInterface;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 class GeoUtility implements SingletonInterface
@@ -168,6 +166,21 @@ class GeoUtility implements SingletonInterface
                 $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
                 return $position;
             }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $queryString
+     *
+     * @return null|Position
+     */
+    public function geocode(string $queryString = null): ?Position
+    {
+        // Try to geocode the $address string
+        /** @var GeocodingInterface $geocodingService */
+        if (is_object($geocodingService = GeneralUtility::makeInstanceService('geocoding'))) {
+            return $geocodingService->geocode($queryString);
         }
         return null;
     }

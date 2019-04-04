@@ -8,6 +8,22 @@ call_user_func(
     function() {
         // Register or change services
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            'tw_geo',
+            'geocoding',
+            \Tollwerk\TwGeo\Service\Geocoding\OpenStreetMapService::class,
+            [
+                'title' => 'OpenStreetMap',
+                'description' => 'Uses the OSM Nominatim web API',
+                'subtype' => '',
+                'available' => true,
+                'priority' => 50,
+                'quality' => 50,
+                'os' => '',
+                'exec' => '',
+                'className' => \Tollwerk\TwGeo\Service\Geocoding\OpenStreetMapService::class
+            ]
+        );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             'tw_fh',
             'geolocation',
             \Tollwerk\TwGeo\Service\Geolocation\PhpGeoIPService::class,
