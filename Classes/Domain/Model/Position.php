@@ -54,8 +54,26 @@ class Position
      */
     protected $postalCode = null;
 
+    /**
+     * @var string
+     */
+    protected $street = null;
+
+    /**
+     * @var string
+     */
+    protected $houseNumber = null;
+
+
     /** @var float  */
     protected $latitude = null;
+
+
+    /**
+     * @var float
+     */
+    protected $longitude = null;
+
 
     /**
      * If true, this position is a debug position
@@ -68,11 +86,6 @@ class Position
      * @var bool
      */
     protected $fromSession = false;
-
-    /**
-     * @var float
-     */
-    protected $longitude = null;
 
     public function __construct(float $latitude = null, float $longitude = null)
     {
@@ -91,7 +104,7 @@ class Position
     /**
      * @param string $countryCode
      */
-    public function setCountryCode(string $countryCode)
+    public function setCountryCode(string $countryCode = null)
     {
         $this->countryCode = $countryCode;
     }
@@ -107,7 +120,7 @@ class Position
     /**
      * @param string $countryName
      */
-    public function setCountryName(string $countryName)
+    public function setCountryName(string $countryName = null)
     {
         $this->countryName = $countryName;
     }
@@ -123,7 +136,7 @@ class Position
     /**
      * @param string $region
      */
-    public function setRegion(string $region)
+    public function setRegion(string $region = null)
     {
         $this->region = $region;
     }
@@ -139,7 +152,7 @@ class Position
     /**
      * @param string $locality
      */
-    public function setLocality(string $locality)
+    public function setLocality(string $locality = null)
     {
         $this->locality = $locality;
     }
@@ -155,10 +168,12 @@ class Position
     /**
      * @param string $postalCode
      */
-    public function setPostalCode(string $postalCode)
+    public function setPostalCode(string $postalCode = null)
     {
         $this->postalCode = $postalCode;
     }
+
+
 
     /**
      * @return float
@@ -171,7 +186,7 @@ class Position
     /**
      * @param float $latitude
      */
-    public function setLatitude(float $latitude)
+    public function setLatitude(float $latitude = null)
     {
         $this->latitude = $latitude;
     }
@@ -187,7 +202,7 @@ class Position
     /**
      * @param float $longitude
      */
-    public function setLongitude(float $longitude)
+    public function setLongitude(float $longitude = null)
     {
         $this->longitude = $longitude;
     }
