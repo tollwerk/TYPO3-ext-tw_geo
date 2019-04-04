@@ -64,6 +64,12 @@ class Position
     protected $debug = false;
 
     /**
+     * If true, position was retrieved from feuser session
+     * @var bool
+     */
+    protected $fromSession = false;
+
+    /**
      * @var float
      */
     protected $longitude = null;
@@ -200,5 +206,21 @@ class Position
     public function setDebug(bool $debug)
     {
         $this->debug = $debug;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFromSession(): bool
+    {
+        return $this->fromSession;
+    }
+
+    /**
+     * @param bool $fromSession
+     */
+    public function setFromSession(bool $fromSession)
+    {
+        $this->fromSession = $fromSession;
     }
 }

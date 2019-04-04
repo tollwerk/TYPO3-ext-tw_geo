@@ -141,19 +141,34 @@ class GeoUtility implements SingletonInterface
      */
     public function getGeoLocation(): ?Position
     {
+        // If geolocation was already stored in session, return it
+        $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tw_geo') ?: [];
+        if (isset($sessionData['geoLocation'])) {
+            /** @var Position $position */
+            $position = $sessionData['geoLocation'];
+            $position->setFromSession(true);
+            return $position;
+        }
+
+        // If debug position, return it
         if ($this->debugPosition) {
+            // Store posision in session
+            $sessionData['geoLocation'] = $this->debugPosition;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
             return $this->debugPosition;
         }
 
-        // Try to return the geolocation
+        // Try to get the real position
         /** @var GeolocationInterface $geoService */
         if (is_object($geoService = GeneralUtility::makeInstanceService('geolocation'))) {
+            /** @var Position $position */
             if ($position = $geoService->getGeolocation()) {
-                /** @var Position $position */
+                // Store posision in session
+                $sessionData['geoLocation'] = $position;
+                $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
                 return $position;
             }
         }
-
         return null;
     }
 }
