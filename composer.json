@@ -1,0 +1,29 @@
+{
+  "name": "tollwerk/tw-geo",
+  "type": "typo3-cms-extension",
+  "description": "TYPO3 tools and services for geolocation, geocoding etc.",
+  "homepage": "https://github.com/tollwerk/TYPO3-ext-tw_geo",
+  "license": "GPL-2.0+",
+  "autoload": {
+    "psr-4": {
+      "Tollwerk\\TwGeo\\": "Classes/"
+    }
+  },
+  "replace": {
+    "tw_geo": "self.version",
+    "typo3-ter/tw_geo": "self.version"
+  },
+  "authors": [
+    {
+      "name": "Klaus Fiedler",
+      "email": "klaus@tollwerk.de"
+    },
+    {
+      "name": "Joschi Kuphal",
+      "email": "joschi@tollwerk.de"
+    }
+  ],
+  "require": {
+    "tollwerk/tw-base": ">=2.3.0"
+  }
+}
