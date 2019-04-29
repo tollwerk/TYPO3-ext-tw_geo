@@ -44,7 +44,10 @@ GeneralUtility::makeInstance(GeoUtility::class)->geocode('Some street, SomeCity'
     <dt><strong>Tollwerk\TwGeo\Service\Geocoding\OpenStreetMapService</strong></dt>
     <dd>Uses the OSM Nominatim web API. See https://wiki.openstreetmap.org/wiki/Nominatim</dd>
 </dl>
-
+<dl>
+    <dt><strong>Tollwerk\TwGeo\Service\Geocoding\GoogleMapsService</strong></dt>
+    <dd>Uses the Google Maps API. See https://developers.google.com/maps/documentation/geocoding/intro</dd>
+</dl>
 
 
 ## Debug configuration
