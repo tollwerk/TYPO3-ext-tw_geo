@@ -1,8 +1,14 @@
-plugin.tw_geo {
+plugin.tx_twgeo {
     view {
         templateRootPath = {$plugin.tx_twgeo.view.templateRootPath}
         partialRootPath = {$plugin.tx_twgeo.view.partialRootPath}
         layoutRootPath = {$plugin.tx_twgeo.view.layoutRootPath}
+    }
+
+    settings {
+        googleMaps {
+            apiKey = {$plugin.tx_twgeo.settings.googleMaps.apiKey}
+        }
     }
 }
 

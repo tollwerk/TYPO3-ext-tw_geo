@@ -62,7 +62,7 @@ class Position
     /**
      * @var string
      */
-    protected $houseNumber = null;
+    protected $streetNumber = null;
 
 
     /** @var float  */
@@ -173,6 +173,37 @@ class Position
         $this->postalCode = $postalCode;
     }
 
+    /**
+     * @return string
+     */
+    public function getStreet(): string
+    {
+        return $this->street;
+    }
+
+    /**
+     * @param string $street
+     */
+    public function setStreet(string $street = null)
+    {
+        $this->street = $street;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStreetNumber(): string
+    {
+        return $this->streetNumber;
+    }
+
+    /**
+     * @param string $streetNumber
+     */
+    public function setStreetNumber(string $streetNumber = null)
+    {
+        $this->streetNumber = $streetNumber;
+    }
 
 
     /**
@@ -238,4 +269,6 @@ class Position
     {
         $this->fromSession = $fromSession;
     }
+
+
 }

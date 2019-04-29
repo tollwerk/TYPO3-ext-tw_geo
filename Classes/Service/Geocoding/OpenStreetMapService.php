@@ -30,7 +30,6 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Utility\CurlUtility;
 use TYPO3\CMS\Core\Service\AbstractService;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class OpenStreetMapService extends AbstractService implements GeocodingInterface
 {

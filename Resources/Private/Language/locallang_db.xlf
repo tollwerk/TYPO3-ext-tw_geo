@@ -15,6 +15,12 @@
             <trans-unit id="file.partialRootPath">
                 <source>Partial Root Path</source>
             </trans-unit>
+            <trans-unit id="googleMaps">
+                <source>Google Maps</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.apiKey">
+                <source>API key</source>
+            </trans-unit>
             <trans-unit id="plugin.debug">
                 <source>tollwerk Geo Tools | Debug</source>
             </trans-unit>
