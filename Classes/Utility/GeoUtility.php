@@ -203,7 +203,7 @@ class GeoUtility implements SingletonInterface
      *
      * @return null|Position|PositionList
      */
-    public function geocode(string $queryString, int $limit = 5)
+    public function geocode(string $queryString, int $limit = 1)
     {
         /** @var AbstractGeocodingService $geocodingService */
         foreach ($this->getServices('geocoding') as $geocodingService) {

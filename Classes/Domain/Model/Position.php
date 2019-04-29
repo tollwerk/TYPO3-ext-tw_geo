@@ -74,6 +74,10 @@ class Position
      */
     protected $longitude = null;
 
+    /**
+     * @var string
+     */
+    protected $displayName = null;
 
     /**
      * If true, this position is a debug position
@@ -210,6 +214,21 @@ class Position
         $this->streetNumber = $streetNumber;
     }
 
+    /**
+     * @return string
+     */
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * @param string $displayName
+     */
+    public function setDisplayName(string $displayName = null)
+    {
+        $this->displayName = $displayName;
+    }
 
     /**
      * @return float

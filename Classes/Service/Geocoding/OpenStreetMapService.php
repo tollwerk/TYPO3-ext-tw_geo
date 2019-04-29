@@ -30,6 +30,7 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class OpenStreetMapService extends AbstractGeocodingService
 {
@@ -75,6 +76,7 @@ class OpenStreetMapService extends AbstractGeocodingService
                 $position->setRegion($address->state);
                 $position->setLocality($address->city ?? $address->town ?? $address->county ?? null);
                 $position->setPostalCode($address->postcode);
+                $position->setDisplayName($result->display_name);
                 $positions->add($position);
             }
             return $positions;
