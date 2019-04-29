@@ -26,10 +26,11 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
-use Tollwerk\TwGeo\Service\Geocoding\GeocodingInterface;
-use Tollwerk\TwGeo\Service\Geolocation\GeolocationInterface;
+use Tollwerk\TwGeo\Service\Geocoding\AbstractGeocodingService;
+use Tollwerk\TwGeo\Service\Geolocation\AbstractGeolocationService;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -56,6 +57,27 @@ class GeoUtility implements SingletonInterface
      * @var Position|null
      */
     protected $debugPosition = null;
+
+    /**
+     * Iterate through all available services classes of $type and $subtype
+     * and yield each one separately. Use this for chaining services
+     * until one of them returns a result or no service is left.
+     *
+     * @param string $type
+     * @param string $subtype
+     *
+     * @return \Generator
+     */
+    protected function getServices(string $type, string $subtype = '')
+    {
+        $serviceChain = '';
+        /** @var AbstractService $serviceObject */
+        while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
+            $serviceChain .= ', '.$serviceObject->getServiceKey();
+            $serviceObject->init();
+            yield $serviceObject;
+        }
+    }
 
     public function __construct()
     {
@@ -99,8 +121,10 @@ class GeoUtility implements SingletonInterface
      * Converts degrees to radians
      *
      * @param float $degrees
+     *
+     * @return float
      */
-    public function degreesToRadians($degrees)
+    public function degreesToRadians($degrees): ?float
     {
         return $degrees * pi() / 180;
     }
@@ -117,7 +141,7 @@ class GeoUtility implements SingletonInterface
      *
      * @return float Distance between points in [m] (same as earthRadius)
      */
-    public function getDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+    public function getDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo): ?float
     {
         // convert from degrees to radians
         $latFrom = deg2rad($latitudeFrom);
@@ -157,30 +181,43 @@ class GeoUtility implements SingletonInterface
         }
 
         // Try to get the real position
-        /** @var GeolocationInterface $geoService */
-        if (is_object($geoService = GeneralUtility::makeInstanceService('geolocation'))) {
-            /** @var Position $position */
-            if ($position = $geoService->getGeolocation()) {
-                // Store posision in session
-                $sessionData['geoLocation'] = $position;
-                $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
+        /** @var AbstractGeolocationService $geolocationService */
+        foreach ($this->getServices('geolocation') as $geolocationService) {
+            $position = $geolocationService->getGeolocation();
+            if ($position instanceof Position) {
                 return $position;
             }
         }
+
+//        /** @var GeolocationInterface $geoService */
+//        if (is_object($geoService = GeneralUtility::makeInstanceService('geolocation'))) {
+//            /** @var Position $position */
+//            if ($position = $geoService->getGeolocation()) {
+//                // Store posision in session
+//                $sessionData['geoLocation'] = $position;
+//                $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
+//                return $position;
+//            }
+//        }
         return null;
     }
 
+
     /**
+     * Try to geocode an query string
+     *
      * @param string $queryString
      *
      * @return null|Position
      */
     public function geocode(string $queryString = null): ?Position
     {
-        // Try to geocode the $address string
-        /** @var GeocodingInterface $geocodingService */
-        if (is_object($geocodingService = GeneralUtility::makeInstanceService('geocoding'))) {
-            return $geocodingService->geocode($queryString);
+        /** @var AbstractGeocodingService $geocodingService */
+        foreach ($this->getServices('geocoding') as $geocodingService) {
+            $position = $geocodingService->geocode($queryString);
+            if ($position instanceof Position) {
+                return $position;
+            }
         }
         return null;
     }

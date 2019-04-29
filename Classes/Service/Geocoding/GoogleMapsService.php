@@ -37,12 +37,11 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Utility\CurlUtility;
-use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-class GoogleMapsService extends AbstractService implements GeocodingInterface
+class GoogleMapsService extends AbstractGeocodingService
 {
     const STATUS_OK = 'OK';
 
@@ -86,6 +85,8 @@ class GoogleMapsService extends AbstractService implements GeocodingInterface
             $result = $data->results[0];
 
             $position = new Position($result->geometry->location->lat, $result->geometry->location->lng);
+            $position->setServiceClass(self::class);
+
             foreach($result->address_components as $addressComponent){
                 $addressComponentType = $addressComponent->types[0];
                 $addressComponentValue = $addressComponent->long_name;

@@ -29,9 +29,8 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Utility\CurlUtility;
-use TYPO3\CMS\Core\Service\AbstractService;
 
-class OpenStreetMapService extends AbstractService implements GeocodingInterface
+class OpenStreetMapService extends AbstractGeocodingService
 {
     /**
      * @var string
@@ -68,6 +67,7 @@ class OpenStreetMapService extends AbstractService implements GeocodingInterface
             $data = $data[0];
             $address = $data->address;
             $position = new Position($data->lat, $data->lon);
+            $position->setServiceClass(self::class);
             $position->setCountryCode($address->country_code);
             $position->setCountryName($address->country);
             $position->setRegion($address->state);
