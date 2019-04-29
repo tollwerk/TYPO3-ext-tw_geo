@@ -6,14 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Each entry will be separated into four possible groups: **Added**, **Removed**, **Changed** and **Fixed**.
 
-## [Planned]
-- Extend `GeoUtilty->geocode()` to return more than one position if desired.  
+## 1.3.0 - 2019-04-29
+### Added
+- Extend `GeoUtility->geocode()` to return more than one position if desired.
+- Add traversable PositionList class
+- Add more properties to Positon class
 
 
 ## [1.2.0] - 2019-04-29
 ### Added
-- Add new property "serviceClass" to Domain/Model/Position to show which service class was used to retrieve the position
-- Add new serice class for geocoding with Google Maps API
+- Add new property "serviceClass" to Domain/Model/Position to show which service class was used to retrieve the position.
+- Add new serice class for geocoding with Google Maps API.
 
 ### Changed
 - Services for geocoding and geolocation are now chained. That means tw_geo iterates, for example, over all geocoding sercice classes until one of them returns a result or no service class is left.  
