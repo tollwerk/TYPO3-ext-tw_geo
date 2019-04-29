@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Tollwerk\TwGeo\Domain\Model\Position;
 
-class GeoiplookupService extends AbstractService implements GeolocationInterface
+class GeoiplookupService extends AbstractGeolocationService
 {
     public function init()
     {
@@ -67,6 +67,7 @@ class GeoiplookupService extends AbstractService implements GeolocationInterface
             }
 
             $position = new Position();
+            $position->setServiceClass(self::class);
             $countryCode = GeneralUtility::trimExplode(' ', $result[1]);
             $position->setCountryCode(is_array($countryCode) ? $countryCode[count($countryCode) - 1] : null);
             $position->setRegion($result[3]);

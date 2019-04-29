@@ -82,6 +82,11 @@ class Position
     protected $debug = false;
 
     /**
+     * @var string
+     */
+    protected $serviceClass = null;
+
+    /**
      * If true, position was retrieved from feuser session
      * @var bool
      */
@@ -106,7 +111,7 @@ class Position
      */
     public function setCountryCode(string $countryCode = null)
     {
-        $this->countryCode = $countryCode;
+        $this->countryCode = strtoupper($countryCode);
     }
 
     /**
@@ -270,5 +275,19 @@ class Position
         $this->fromSession = $fromSession;
     }
 
+    /**
+     * @return string
+     */
+    public function getServiceClass(): string
+    {
+        return $this->serviceClass;
+    }
 
+    /**
+     * @param string $serviceClass
+     */
+    public function setServiceClass(string $serviceClass)
+    {
+        $this->serviceClass = $serviceClass;
+    }
 }
