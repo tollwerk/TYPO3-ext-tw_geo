@@ -28,6 +28,7 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 
 
 use Tollwerk\TwGeo\Domain\Model\Position;
+use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
 
 class OpenStreetMapService extends AbstractGeocodingService
@@ -51,29 +52,32 @@ class OpenStreetMapService extends AbstractGeocodingService
      *
      * @return null|Position
      */
-    public function geocode(string $address = null): ?Position
+    public function geocode(string $address = null): ?PositionList
     {
         $parameters = [
             'q' => $address,
-            'addressdetails' => 1
+            'addressdetails' => 1,
+            'accept-language' => $GLOBALS['TSFE']->sys_language_isocode,
         ];
 
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
-        $result = CurlUtility::httpRequest($requestUri,$this->httpRequestHeader);
+        $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
         $data = json_decode($result);
-
-        if(is_array($data) && count($data)){
-            /** @var \stdClass $data */
-            $data = $data[0];
-            $address = $data->address;
-            $position = new Position($data->lat, $data->lon);
-            $position->setServiceClass(self::class);
-            $position->setCountryCode($address->country_code);
-            $position->setCountryName($address->country);
-            $position->setRegion($address->state);
-            $position->setLocality($address->city ?? $address->town ?? $address->county ?? null);
-            $position->setPostalCode($address->postcode);
-            return $position;
+        if (is_array($data) && count($data)) {
+            $positions = new PositionList();
+            /** @var \stdClass $result */
+            foreach ($data as $result) {
+                $address = $result->address;
+                $position = new Position($result->lat, $result->lon);
+                $position->setServiceClass(self::class);
+                $position->setCountryCode($address->country_code);
+                $position->setCountryName($address->country);
+                $position->setRegion($address->state);
+                $position->setLocality($address->city ?? $address->town ?? $address->county ?? null);
+                $position->setPostalCode($address->postcode);
+                $positions->add($position);
+            }
+            return $positions;
         }
         return null;
     }

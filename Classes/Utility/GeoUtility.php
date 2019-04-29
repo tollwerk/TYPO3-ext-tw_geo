@@ -26,6 +26,7 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
+use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Service\Geocoding\AbstractGeocodingService;
 use Tollwerk\TwGeo\Service\Geolocation\AbstractGeolocationService;
 use Tollwerk\TwGeo\Domain\Model\Position;
@@ -34,6 +35,7 @@ use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 class GeoUtility implements SingletonInterface
@@ -189,16 +191,6 @@ class GeoUtility implements SingletonInterface
             }
         }
 
-//        /** @var GeolocationInterface $geoService */
-//        if (is_object($geoService = GeneralUtility::makeInstanceService('geolocation'))) {
-//            /** @var Position $position */
-//            if ($position = $geoService->getGeolocation()) {
-//                // Store posision in session
-//                $sessionData['geoLocation'] = $position;
-//                $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
-//                return $position;
-//            }
-//        }
         return null;
     }
 
@@ -207,16 +199,38 @@ class GeoUtility implements SingletonInterface
      * Try to geocode an query string
      *
      * @param string $queryString
+     * @param int $limit If 0, return all
      *
-     * @return null|Position
+     * @return null|Position|PositionList
      */
-    public function geocode(string $queryString = null): ?Position
+    public function geocode(string $queryString, int $limit = 5)
     {
         /** @var AbstractGeocodingService $geocodingService */
         foreach ($this->getServices('geocoding') as $geocodingService) {
-            $position = $geocodingService->geocode($queryString);
-            if ($position instanceof Position) {
-                return $position;
+            $positions = $geocodingService->geocode($queryString, $limit);
+            if($positions instanceof PositionList && $positions->count()){
+                // Return complete PositionList if no limit was set
+                if(!$limit){
+                    return $positions;
+                }
+
+                // Return first position
+                if($limit == 1){
+                    $positions->rewind();
+                    return $positions->current();
+                }
+
+                // Return desired number of position
+                $returnPositions = new PositionList();
+                $positions->rewind();
+                $count = 0;
+                foreach($positions as $position){
+                   if($count >= $limit){
+                       break;
+                   }
+                   $returnPositions->add($position);
+                }
+                return $returnPositions;
             }
         }
         return null;

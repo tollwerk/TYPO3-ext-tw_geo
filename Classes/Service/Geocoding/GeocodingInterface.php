@@ -27,14 +27,16 @@
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use Tollwerk\TwGeo\Domain\Model\Position;
+use Tollwerk\TwGeo\Domain\Model\PositionList;
 
 interface GeocodingInterface
 {
     /**
      * Get geocoding result for address string
+     *
      * @param string $queryString
      *
-     * @return null|Position
+     * @return \Traversable
      */
-    public function geocode(string $queryString = null): ?Position;
+    public function geocode(string $queryString = null): ?PositionList;
 }

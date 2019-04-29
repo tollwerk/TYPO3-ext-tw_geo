@@ -36,6 +36,7 @@
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use Tollwerk\TwGeo\Domain\Model\Position;
+use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
@@ -64,56 +65,60 @@ class GoogleMapsService extends AbstractGeocodingService
      *
      * @return null|Position
      */
-    public function geocode(string $address = null): ?Position
+    public function geocode(string $address = null): ?PositionList
     {
+        // Check if all necessary typoscript settings are set and return null if not
         $settings = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TwGeo');
-        if(empty($settings['googleMaps']['apiKey'])){
+        if (empty($settings['googleMaps']['apiKey'])) {
             return null;
         }
 
+        // Call web API
         $parameters = [
             'address' => $address,
             'key' => $settings['googleMaps']['apiKey'],
             'language' => $GLOBALS['TSFE']->sys_language_isocode
         ];
-
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
-        $result = CurlUtility::httpRequest($requestUri,$this->httpRequestHeader);
+        $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
         $data = json_decode($result);
-        if($data->status == self::STATUS_OK && count($data->results)){
+
+        // Return results
+        if ($data->status == self::STATUS_OK && count($data->results)) {
+            $positions = new PositionList();
             /** @var \stdClass $result */
-            $result = $data->results[0];
+            foreach($data->results as $result){
+                $position = new Position($result->geometry->location->lat, $result->geometry->location->lng);
+                $position->setServiceClass(self::class);
+                foreach ($result->address_components as $addressComponent) {
+                    $addressComponentType = $addressComponent->types[0];
+                    $addressComponentValue = $addressComponent->long_name;
 
-            $position = new Position($result->geometry->location->lat, $result->geometry->location->lng);
-            $position->setServiceClass(self::class);
-
-            foreach($result->address_components as $addressComponent){
-                $addressComponentType = $addressComponent->types[0];
-                $addressComponentValue = $addressComponent->long_name;
-
-                switch($addressComponentType){
-                    case 'street_number':
-                        $position->setStreetNumber($addressComponentValue);
-                        break;
-                    case 'route':
-                        $position->setStreet($addressComponentValue);
-                        break;
-                    case 'locality':
-                        $position->setLocality($addressComponentValue);
-                        break;
-                    case 'administrative_area_level_1':
-                        $position->setRegion($addressComponentValue);
-                        break;
-                    case 'country':
-                        $position->setCountryName($addressComponentValue);
-                        $position->setCountryCode($addressComponent->short_name);
-                        break;
-                    case 'postal_code':
-                        $position->setPostalCode($addressComponentValue);
-                        break;
+                    switch ($addressComponentType) {
+                        case 'street_number':
+                            $position->setStreetNumber($addressComponentValue);
+                            break;
+                        case 'route':
+                            $position->setStreet($addressComponentValue);
+                            break;
+                        case 'locality':
+                            $position->setLocality($addressComponentValue);
+                            break;
+                        case 'administrative_area_level_1':
+                            $position->setRegion($addressComponentValue);
+                            break;
+                        case 'country':
+                            $position->setCountryName($addressComponentValue);
+                            $position->setCountryCode($addressComponent->short_name);
+                            break;
+                        case 'postal_code':
+                            $position->setPostalCode($addressComponentValue);
+                            break;
+                    }
                 }
+                $positions->append($position);
             }
-            return $position;
+            return $positions;
         }
         return null;
     }
