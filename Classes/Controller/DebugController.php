@@ -64,6 +64,8 @@ class DebugController extends ActionController
      * @param string $queryString
      */
     public function geocodingAction(String $queryString = null){
-        $this->view->assign('geocode', $this->geoUtility->geocode($queryString));
+        if($queryString){
+            $this->view->assign('geocode', $this->geoUtility->geocode($queryString));
+        }
     }
 }
