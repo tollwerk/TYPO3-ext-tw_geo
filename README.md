@@ -2,7 +2,8 @@
 
 Right now this extension provides the following features
  * Get the user position based on the users IP address
- * Geocoding: Get position by address string 
+ * Geocoding: Get position by address string
+ * Add field "Geoselect" for usage in TYPO3 FormFactory classes 
 
 All features are implemented as TYPO3 services so there is a well defined fallback behaviour
 and the possibility for other developers to add their own services.
@@ -48,6 +49,17 @@ GeneralUtility::makeInstance(GeoUtility::class)->geocode('Some street, SomeCity'
     <dt><strong>Tollwerk\TwGeo\Service\Geocoding\GoogleMapsService</strong></dt>
     <dd>Uses the Google Maps API. See https://developers.google.com/maps/documentation/geocoding/intro</dd>
 </dl>
+
+### New Form Elements
+
+#### Geoselect
+Usable inside FormFactory classes
+```php
+/** @var TYPO3\CMS\Form\Domain\Model\FormElements\Page $page */
+$geoselectField = $page->createElement('yourFieldName','Geoselect');
+```
+
+
 
 
 ## Debug configuration

@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Each entry will be separated into four possible groups: **Added**, **Removed**, **Changed** and **Fixed**.
 
-## 1.3.0 - 2019-04-29
+## [1.4.0] - 2019-04-29
+### Added
+- Add new field "Geoselect" for TYPO3 form framework
+
+## [1.3.0] - 2019-04-29
 ### Added
 - Extend `GeoUtility->geocode()` to return more than one position if desired.
 - Add traversable PositionList class
