@@ -1,0 +1,26 @@
+plugin.tx_form {
+    settings {
+        yamlConfigurations {
+            1556564992 = EXT:tw_geo/Configuration/Yaml/Form/CustomFormSetup.yaml
+        }
+    }
+
+    view {
+        partialRootPaths {
+            1556564992 = EXT:tw_geo/Resources/Private/Partials/Form/
+        }
+    }
+}
+
+module.tx_form {
+    settings {
+        yamlConfigurations {
+            1556564992 = EXT:tw_geo/Configuration/Yaml/Form/CustomFormSetup.yaml
+        }
+    }
+    view {
+        partialRootPaths {
+            1556564992 = EXT:tw_geo/Resources/Private/Partials/Form/
+        }
+    }
+}

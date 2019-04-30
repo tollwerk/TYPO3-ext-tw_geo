@@ -1,0 +1,30 @@
+<f:comment><!--
+
+    @param GenericFormElement element          Fieldset element
+
+--></f:comment>
+<html xmlns:f="https://xsd.helhum.io/ns/typo3/cms-fluid/master/ViewHelpers"
+      xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+    <formvh:renderRenderable renderable="{element}">
+        <fieldset id="{element.uniqueIdentifier}"
+                  class="FormFieldset{f:if(condition: element.properties.elementClassAttribute, then: ' {element.properties.elementClassAttribute}')}">
+            <f:variable name="label"
+                        value="{f:if(condition: element.label, then: element.label, else: '{formvh:translateElementProperty(element: element, property: \'label\')}')}"/>
+            <f:if condition="{label}">
+                <legend>{label}</legend>
+            </f:if>
+            <f:for each="{element.elements}" as="element">
+                <f:render partial="{element.templateName}" arguments="{element: element}"/>
+            </f:for>
+
+
+            <f:form.button property="__currentPage" value="{element.parentRenderable.index}" class="">
+                {f:translate(key:'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.submit.label')}
+            </f:form.button>
+
+            <f:render partial="Elements/Map/Default"/>
+        </fieldset>
+    </formvh:renderRenderable>
+</html>

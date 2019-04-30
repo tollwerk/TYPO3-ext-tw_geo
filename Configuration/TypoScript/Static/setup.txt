@@ -1,3 +1,5 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:tw_geo/Configuration/TypoScript/Main/10_main.t3s">
+
 plugin.tx_twgeo {
     view {
         templateRootPath = {$plugin.tx_twgeo.view.templateRootPath}

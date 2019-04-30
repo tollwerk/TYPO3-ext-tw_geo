@@ -79,6 +79,9 @@ call_user_func(
             ['Debug' => 'geolocation, geocoding'],
             ['Debug' => 'geolocation, geocoding']
         );
+
+        // Register hooks
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1556564992] = \Tollwerk\TwGeo\Hook\FormHook::class;
     }
 );
 
