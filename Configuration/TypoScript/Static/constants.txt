@@ -15,6 +15,18 @@ plugin.tx_twgeo {
         googleMaps {
             # cat=plugin.tx_geo/googleMaps/10; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.apiKey
             apiKey =
+
+            # cat=plugin.tx_geo/googleMaps/20; type=boolean; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.includeJs
+            includeJs = 0
+
+            # cat=plugin.tx_geo/googleMaps/30; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.mapMarker
+            mapMarker = typo3conf/ext/tw_geo/Resources/Public/Icons/MapMarker.png
+
+            # cat=plugin.tx_geo/googleMaps/40; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.latitude
+            latitude = 51.163361
+
+            # cat=plugin.tx_geo/googleMaps/41; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.longitude
+            longitude = 10.447683
         }
     }
 }

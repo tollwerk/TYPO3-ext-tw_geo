@@ -8,23 +8,88 @@
       data-namespace-typo3-fluid="true">
 
     <formvh:renderRenderable renderable="{element}">
-        <fieldset id="{element.uniqueIdentifier}"
-                  class="FormFieldset{f:if(condition: element.properties.elementClassAttribute, then: ' {element.properties.elementClassAttribute}')}">
-            <f:variable name="label"
-                        value="{f:if(condition: element.label, then: element.label, else: '{formvh:translateElementProperty(element: element, property: \'label\')}')}"/>
+        <fieldset id="{element.uniqueIdentifier}" class="FormField Geoselect FormFieldset{f:if(condition: element.properties.elementClassAttribute, then: ' {element.properties.elementClassAttribute}')}"{f:if(condition: element.latLon, then: ' data-lat-lon="{element.latLon}"')}>
+            <f:comment><!-- Fieldset label --></f:comment>
+            <f:variable name="label" value="{f:if(condition: element.label, then: element.label, else: '{formvh:translateElementProperty(element: element, property: \'label\')}')}"/>
             <f:if condition="{label}">
                 <legend>{label}</legend>
             </f:if>
-            <f:for each="{element.elements}" as="element">
-                <f:render partial="{element.templateName}" arguments="{element: element}"/>
-            </f:for>
 
+            <f:comment><!-- Search field and latitude-longitude field --></f:comment>
+            <div class="Geoselect__search">
+                <div class="Geoselect--search-input">
+                    <f:render partial="{element.searchField.templateName}" arguments="{element: element.searchField}"/>
+                    <f:form.hidden property="{element.latLonField.identifier}" value="{element.latLon}" id="{element.uniqueIdentifier}-lat-lon"/>
+                </div>
+                <div class="Geoselect--search-submit">
+                    <f:form.button property="__currentPage" value="{element.parentRenderable.index}" id="{element.uniqueIdentifier}-submit" class="CallToAction CallToAction--outline CallToAction--theme-default" additionalAttributes="{formnovalidate: 'formnovalidate'}">
+                        {f:translate(key:'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.submit.label')}
+                    </f:form.button>
+                </div>
+            </div>
 
-            <f:form.button property="__currentPage" value="{element.parentRenderable.index}" class="">
-                {f:translate(key:'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.submit.label')}
-            </f:form.button>
+            <f:comment><!-- Found positions based on search results --></f:comment>
+            <div class="Geoselect__positions">
+                <f:render section="Positions" arguments="{_all}"/>
+            </div>
 
-            <f:render partial="Elements/Map/Default"/>
+            <f:comment><!-- Map --></f:comment>
+            <f:render section="Map" arguments="{_all}"/>
         </fieldset>
     </formvh:renderRenderable>
+
+    <f:section name="Map">
+        <f:format.raw>
+        <style>
+            .GoogleMapControl {
+                display: block;
+                padding: 16px;
+                background-color: #2b7bcd;
+                color: #fff;
+                border-radius: 12px;
+                margin: 8px;
+                transition: all .15s;
+            }
+
+            .GoogleMapControl:hover {
+                cursor: pointer;
+                background-color: #145081;
+            }
+
+            .GoogleMapControl svg {
+                display: block;
+                width: 16px;
+                height: 16px;
+                fill: currentColor;
+            }
+
+            .GoogleMapControl svg path {
+                fill: currentColor;
+            }
+        </style>
+        </f:format.raw>
+        <div class="Geoselect__map" id="{element.uniqueIdentifier}-map" data-marker="{element.properties.mapMarker}" data-latitude="{element.properties.mapCenter.latitude}"  data-longitude="{element.properties.mapCenter.longitude}"></div>
+        <template id="GoogleMap-MyLocation" hidden>
+            <div class="GoogleMapControl" title="{f:translate(key: 'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.map.myLocation.title')}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 500 500"><path fill="#666666" d="M512 224h-50.462C447.718 134.88 377.12 64.282 288 50.462V0h-64v50.462C134.88 64.282 64.282 134.88 50.462 224H0v64h50.462C64.282 377.12 134.88 447.718 224 461.538V512h64v-50.462C377.12 447.718 447.718 377.12 461.538 288H512v-64zm-115.589 0H346.53c-9.642-27.275-31.255-48.889-58.53-58.53v-49.881c53.757 12.245 96.166 54.655 108.411 108.411zM256 288c-17.673 0-32-14.327-32-32s14.327-32 32-32c17.673 0 32 14.327 32 32s-14.327 32-32 32zm-32-172.411v49.881c-27.275 9.641-48.889 31.255-58.53 58.53h-49.881c12.245-53.756 54.655-96.166 108.411-108.411zM115.589 288h49.881c9.641 27.275 31.255 48.889 58.53 58.53v49.881C170.244 384.166 127.834 341.757 115.589 288zM288 396.411V346.53c27.275-9.642 48.889-31.255 58.53-58.53h49.881C384.166 341.757 341.757 384.166 288 396.411z"/></svg>
+            </div>
+        </template>
+    </f:section>
+
+    <f:section name="Positions">
+        <f:if condition="{element.positions}">
+            <span class="FormSelect" id="{element.uniqueIdentifier}-position">
+                <div class="form-control">
+                    <f:form.select property="{element.positionField.identifier}" id="{element.positionField.uniqueIdentifier}" class="Geoselect__position">
+                        <f:for each="{element.positions}" as="position">
+                            <f:alias map="{value: '{position.latitude},{position.longitude}'}">
+                                <f:form.select.option value="{value}" selected="{f:if(condition: '{element.latLon} == {value}', then: 1, else: 0)}">{position.displayName}</f:form.select.option>
+                            </f:alias>
+                        </f:for>
+                    </f:form.select>
+                </div>
+            </span>
+        </f:if>
+    </f:section>
+
 </html>

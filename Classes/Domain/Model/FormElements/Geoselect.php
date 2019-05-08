@@ -35,6 +35,10 @@
 
 namespace Tollwerk\TwGeo\Domain\Model\FormElements;
 
+use Tollwerk\TwGeo\Domain\Model\PositionList;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -43,23 +47,85 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class Geoselect extends \TYPO3\CMS\Form\Domain\Model\FormElements\Section
 {
     /**
+     * Text input for geolocation search string
      * @var GenericFormElement
      */
-    protected $latLon = null;
+    protected $searchField = null;
 
+    /**
+     * Text input for combined latitude and longitude
+     * @var GenericFormElement
+     */
+    protected $latLonField = null;
+
+    /**
+     * Radiobuttons for selectable places based on geolocation results
+     * @var GenericFormElement
+     */
+    protected $positionField = null;
+
+    /**
+     * @var PositionList
+     */
+    protected $positions = null;
+
+    /**
+     * @var int
+     */
+    protected $latLon = null;
 
     /**
      * @return GenericFormElement
      */
-    public function getLatLon(): GenericFormElement
+    public function getSearchField(): GenericFormElement
+    {
+        return $this->searchField;
+    }
+
+    /**
+     * @return GenericFormElement
+     */
+    public function getLatLonField(): GenericFormElement
+    {
+        return $this->latLonField;
+    }
+
+    /**
+     * @return GenericFormElement
+     */
+    public function getPositionField(): GenericFormElement
+    {
+        return $this->positionField;
+    }
+
+    /**
+     * @param PositionList|null $positions
+     */
+    public function setPositions(PositionList $positions = null)
+    {
+        $this->positions = $positions;
+    }
+
+    /**
+     * @return PositionList
+     */
+    public function getPositions(): ?PositionList
+    {
+        return $this->positions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLatLon(): ?string
     {
         return $this->latLon;
     }
 
     /**
-     * @param GenericFormElement $latLon
+     * @param int $latLon
      */
-    public function setLatitude(GenericFormElement $latLon)
+    public function setLatLon(string $latLon = null)
     {
         $this->latLon = $latLon;
     }
@@ -69,10 +135,33 @@ class Geoselect extends \TYPO3\CMS\Form\Domain\Model\FormElements\Section
      */
     public function initializeFormElement()
     {
-        $latLon = $this->createElement($this->identifier.'-lat-lon', 'Text');
-        $this->latLon = $latLon;
+        // Get typoscript settings for tw_geo
+        $settings = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TwGeo');
 
-        $update = $this->createElement($this->identifier.'-update', 'SubmitButton');
-        $update->setLabel('update');
+        // Include google maps javascript if enabled.
+        if (!empty($settings['googleMaps']['includeJs']) && !empty($settings['googleMaps']['apiKey'])) {
+            $googleMapsParameters = [
+                'key' => $settings['googleMaps']['apiKey'],
+                'language' => $GLOBALS['TSFE']->sys_language_isocode,
+            ];
+            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js'] = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&' . http_build_query($googleMapsParameters) . '"></script>';
+            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_geoselect_js'] = '<script src="/typo3conf/ext/tw_geo/Resources/Public/JavaScript/geoselect.js"></script>';
+            $this->setProperty('mapMarker', GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $settings['googleMaps']['mapMarker']);
+            $this->setProperty('mapCenter', [
+                'latitude' => $settings['googleMaps']['latitude'],
+                'longitude' => $settings['googleMaps']['longitude']]
+            );
+        }
+
+        // Add search field
+        $this->searchField = $this->createElement($this->identifier . '-search', 'Text');
+        $this->searchField->setLabel(LocalizationUtility::translate('LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.search.label', 'TwGeo'));
+
+        // Add hidden latitude;longitude field
+        $this->latLonField = $this->createElement($this->identifier . '-lat-lon', 'Hidden');
+
+        // Add position field for selection found positions based on the search result. Only used in non-js version.
+        $this->positionField = $this->createElement($this->identifier . '-position', 'SingleSelect');
+        $this->positionField->setLabel(LocalizationUtility::translate('LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.positions.label', 'TwGeo'));
     }
 }

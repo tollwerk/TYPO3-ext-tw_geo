@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Each entry will be separated into four possible groups: **Added**, **Removed**, **Changed** and **Fixed**.
 
+## [Planned]
+- Add Google Maps Autocomplete to Geoselect form field
+- Add Google Map to Geoselect form field
+- Add "Center on my location" control to google map element
+- Geoselect element fires a javascript event "geoselect_change"
+
 ## [1.4.0] - 2019-04-29
 ### Added
 - Add new field "Geoselect" for TYPO3 form framework
@@ -15,7 +21,6 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 - Extend `GeoUtility->geocode()` to return more than one position if desired.
 - Add traversable PositionList class
 - Add more properties to Positon class
-
 
 ## [1.2.0] - 2019-04-29
 ### Added

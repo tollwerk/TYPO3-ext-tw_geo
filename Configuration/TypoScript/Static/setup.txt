@@ -10,6 +10,10 @@ plugin.tx_twgeo {
     settings {
         googleMaps {
             apiKey = {$plugin.tx_twgeo.settings.googleMaps.apiKey}
+            includeJs = {$plugin.tx_twgeo.settings.googleMaps.includeJs}
+            mapMarker = {$plugin.tx_twgeo.settings.googleMaps.mapMarker}
+            latitude = {$plugin.tx_twgeo.settings.googleMaps.latitude}
+            longitude = {$plugin.tx_twgeo.settings.googleMaps.longitude}
         }
     }
 }
