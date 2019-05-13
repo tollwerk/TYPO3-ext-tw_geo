@@ -36,15 +36,22 @@
 namespace Tollwerk\TwGeo\Domain\Model\FormElements;
 
 use Tollwerk\TwGeo\Domain\Model\PositionList;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Form\Domain\Exception\TypeDefinitionNotFoundException;
+use TYPO3\CMS\Form\Domain\Exception\TypeDefinitionNotValidException;
+use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
+use TYPO3\CMS\Form\Domain\Model\FormElements\Section;
 
-
-class Geoselect extends \TYPO3\CMS\Form\Domain\Model\FormElements\Section
+/**
+ * Geoselect form element
+ *
+ * @package Tollwerk\TwGeo\Domain\Model\FormElements
+ */
+class Geoselect extends Section
 {
     /**
      * Text input for geolocation search string
@@ -99,19 +106,19 @@ class Geoselect extends \TYPO3\CMS\Form\Domain\Model\FormElements\Section
     }
 
     /**
-     * @param PositionList|null $positions
-     */
-    public function setPositions(PositionList $positions = null)
-    {
-        $this->positions = $positions;
-    }
-
-    /**
      * @return PositionList
      */
     public function getPositions(): ?PositionList
     {
         return $this->positions;
+    }
+
+    /**
+     * @param PositionList|null $positions
+     */
+    public function setPositions(PositionList $positions = null)
+    {
+        $this->positions = $positions;
     }
 
     /**
@@ -131,37 +138,46 @@ class Geoselect extends \TYPO3\CMS\Form\Domain\Model\FormElements\Section
     }
 
     /**
-     * @throws \TYPO3\CMS\Form\Domain\Exception\TypeDefinitionNotFoundException
+     * Initialize the form element
+     *
+     * @throws TypeDefinitionNotFoundException
+     * @throws InvalidConfigurationTypeException
+     * @throws TypeDefinitionNotValidException
      */
     public function initializeFormElement()
     {
         // Get typoscript settings for tw_geo
-        $settings = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TwGeo');
+        $settings = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)
+                                  ->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TwGeo');
 
         // Include google maps javascript if enabled.
         if (!empty($settings['googleMaps']['includeJs']) && !empty($settings['googleMaps']['apiKey'])) {
-            $googleMapsParameters = [
-                'key' => $settings['googleMaps']['apiKey'],
+            $googleMapsParameters                                             = [
+                'key'      => $settings['googleMaps']['apiKey'],
                 'language' => $GLOBALS['TSFE']->sys_language_isocode,
             ];
-            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js'] = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&' . http_build_query($googleMapsParameters) . '"></script>';
-            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_geoselect_js'] = '<script src="/typo3conf/ext/tw_geo/Resources/Public/JavaScript/geoselect.js"></script>';
-            $this->setProperty('mapMarker', GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $settings['googleMaps']['mapMarker']);
+            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js'] = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&'.http_build_query($googleMapsParameters).'"></script>';
+//            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_geoselect_js'] = '<script src="/typo3conf/ext/tw_geo/Resources/Public/JavaScript/Scripts.js"></script>';
+            $this->setProperty('mapMarker',
+                GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$settings['googleMaps']['mapMarker']);
             $this->setProperty('mapCenter', [
-                'latitude' => $settings['googleMaps']['latitude'],
-                'longitude' => $settings['googleMaps']['longitude']]
+                    'latitude'  => $settings['googleMaps']['latitude'],
+                    'longitude' => $settings['googleMaps']['longitude']
+                ]
             );
         }
 
         // Add search field
-        $this->searchField = $this->createElement($this->identifier . '-search', 'Text');
-        $this->searchField->setLabel(LocalizationUtility::translate('LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.search.label', 'TwGeo'));
+        $this->searchField = $this->createElement($this->identifier.'-search', 'Text');
+        $this->searchField->setLabel(LocalizationUtility::translate('LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.search.label',
+            'TwGeo'));
 
         // Add hidden latitude;longitude field
-        $this->latLonField = $this->createElement($this->identifier . '-lat-lon', 'Hidden');
+        $this->latLonField = $this->createElement($this->identifier.'-lat-lon', 'Hidden');
 
         // Add position field for selection found positions based on the search result. Only used in non-js version.
-        $this->positionField = $this->createElement($this->identifier . '-position', 'SingleSelect');
-        $this->positionField->setLabel(LocalizationUtility::translate('LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.positions.label', 'TwGeo'));
+        $this->positionField = $this->createElement($this->identifier.'-position', 'SingleSelect');
+        $this->positionField->setLabel(LocalizationUtility::translate('LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.positions.label',
+            'TwGeo'));
     }
 }

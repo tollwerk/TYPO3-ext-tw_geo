@@ -77,8 +77,8 @@
             }
         }.bind(this));
 
-        this.search.addEventListener('change', function(event){
-            if(!event.currentTarget.value) {
+        this.search.addEventListener('change', function (event) {
+            if (!event.currentTarget.value) {
                 this.reset();
             }
         }.bind(this));
@@ -91,13 +91,10 @@
             return false;
         }
 
-
-
-            var center = {
-                lat: Number(mapElement.attributes['data-latitude'].value),
-                lng: Number(mapElement.attributes['data-longitude'].value)
-            };
-
+        var center = {
+            lat: Number(mapElement.attributes['data-latitude'].value),
+            lng: Number(mapElement.attributes['data-longitude'].value)
+        };
 
 
         this.map = new google.maps.Map(mapElement, {
@@ -133,7 +130,7 @@
         });
         // this.addMyLocationControl();
 
-        if(this.container.attributes['data-lat-lon']) {
+        if (this.container.attributes['data-lat-lon']) {
             var latLon = this.container.attributes['data-lat-lon'].value.split(',');
             var center = {
                 lat: Number(latLon[0]),
@@ -156,6 +153,7 @@
             this.submit.parentNode.removeChild(this.submit);
         }
         this.container.classList.add('Geoselect--js');
+        this.container.twGeoselect = this;
     }
 
     /**

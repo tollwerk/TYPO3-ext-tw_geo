@@ -9,7 +9,7 @@ TYPO3:
                 templateRootPaths:
                   1556564992: 'EXT:tw_geo/Resources/Private/Templates/Form/'
                 partialRootPaths:
-                  1556564992: 'EXT:tw_geo/Resources/Private/Partials/Form/'
+                  1556564992: 'EXT:tw_geo/Resources/Private/Partials/Elements/Form/'
                 elementClassAttribute: 'Form'
             Geoselect:
               __inheritances:
