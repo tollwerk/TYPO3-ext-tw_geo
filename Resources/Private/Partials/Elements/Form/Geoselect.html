@@ -36,10 +36,19 @@
             </div>
 
             <f:comment><!-- Map --></f:comment>
-            <f:render section="Map" arguments="{_all}"/>
+            <f:if condition="{element.renderingOptions.map}">
+                <f:render section="Map" arguments="{_all}"/>
+            </f:if>
         </fieldset>
     </formvh:renderRenderable>
 
+    <f:comment><!--
+
+        Google Map
+
+        @param GenericFormElement element          Fieldset element
+
+    --></f:comment>
     <f:section name="Map">
         <f:format.raw>
         <style>

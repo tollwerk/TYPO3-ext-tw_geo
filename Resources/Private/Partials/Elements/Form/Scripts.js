@@ -1,5 +1,4 @@
 (function (d) {
-
     /**
      * Find closest ancestor by tag name.
      * Hopefully compatible with most browsers.
@@ -14,10 +13,12 @@
 
     /**
      * Enhance TYPO3 Geoselect form fields with autocomplete etc.
+     *
+     * @param {NodeList} elements Geoselect elements
      * @constructor
      */
-    var TwGeoselect = function TwGeoselect() {
-        this.elements = [].slice.call(d.querySelectorAll('.Geoselect'), 0).map(e => new TwGeoselectElement(e));
+    function Geoselect(elements) {
+        this.elements = [].slice.call(elements).map(e => new GeoselectElement(e));
     };
 
     /**
@@ -29,7 +30,7 @@
      * @returns {null}
      * @constructor
      */
-    var TwGeoselectElement = function TwGeoselectElement(container) {
+    function GeoselectElement(container) {
         // Set up all elements, cancel if something important was not found
         this.container = container || null;
         if (!this.container || !this.container.id) {
@@ -44,11 +45,10 @@
 
         this.position = d.getElementById(this.container.id + '-position');
         this.submit = d.getElementById(this.container.id + '-submit');
-        this.map = null;
 
         // Initalize enhancements
         this.initAutocomplete();
-        this.initMap();
+        this.map = this.initMap();
 
         // Change markup and css classes to signal that everything works
         this.onInitialize();
@@ -57,7 +57,7 @@
     /**
      * Try to add autocomplete to search field
      */
-    TwGeoselectElement.prototype.initAutocomplete = function () {
+    GeoselectElement.prototype.initAutocomplete = function () {
         this.searchAutocomplete = new google.maps.places.Autocomplete(this.search);
         this.searchAutocomplete.addListener('place_changed', this.handle_autocompletePlaceChanged.bind(this));
 
@@ -80,30 +80,25 @@
     /**
      * Try to initialize the dynamic google map
      *
-     * @returns {boolean}
+     * @returns {google.maps.Map} Google Map
      */
-    TwGeoselectElement.prototype.initMap = function () {
-        var mapElement = d.getElementById(this.container.id + '-map');
+    GeoselectElement.prototype.initMap = function () {
+        const mapElement = d.getElementById(this.container.id + '-map');
         if (!mapElement) {
-            return false;
+            return null;
         }
 
-        var center = {
-            lat: Number(mapElement.attributes['data-latitude'].value),
-            lng: Number(mapElement.attributes['data-longitude'].value)
-        };
-
-
-        this.map = new google.maps.Map(mapElement, {
+        const map = new google.maps.Map(mapElement, {
             zoom: 6,
-            center: center,
+            center: {
+                lat: Number(mapElement.attributes['data-latitude'].value),
+                lng: Number(mapElement.attributes['data-longitude'].value)
+            },
             streetViewControl: false,
             rotateControl: false,
             fullscreenControl: false,
             mapTypeControl: false,
-            zoomControlOptions: {
-                position: google.maps.ControlPosition.LEFT_TOP
-            },
+            zoomControlOptions: { position: google.maps.ControlPosition.LEFT_TOP },
             styles: [
                 {
                     "featureType": "poi",
@@ -128,21 +123,18 @@
         // this.addMyLocationControl();
 
         if (this.container.attributes['data-lat-lon']) {
-            var latLon = this.container.attributes['data-lat-lon'].value.split(',');
-            var center = {
-                lat: Number(latLon[0]),
-                lng: Number(latLon[1])
-            }
-
+            const latLon = this.container.attributes['data-lat-lon'].value.split(',');
             this.setLatLon(Number(latLon[0]), Number(latLon[1]));
         }
+
+        return map;
     }
 
     /**
      * Gets called when everything was set up successfully
      * and changes some CSS classes, hides elements etc.
      */
-    TwGeoselectElement.prototype.onInitialize = function () {
+    GeoselectElement.prototype.onInitialize = function () {
         if (this.position) {
             this.position.parentNode.removeChild(this.position);
         }
@@ -150,23 +142,23 @@
             this.submit.parentNode.removeChild(this.submit);
         }
         this.container.classList.add('Geoselect--js');
-        this.container.twGeoselect = this;
+        this.container.geoselect = this;
     }
 
     /**
      * Set value of latlon form field on selecting something from autocomplete
      */
-    TwGeoselectElement.prototype.handle_autocompletePlaceChanged = function (event) {
+    GeoselectElement.prototype.handle_autocompletePlaceChanged = function (event) {
         // Cancel if there is no autocomplete result
-        var place = this.searchAutocomplete.getPlace();
+        const place = this.searchAutocomplete.getPlace();
         if (!place || !place.geometry) {
             this.container.removeAttribute('data-lat-lon');
             return null;
         }
 
         // Get lat and lon
-        var latitude = place.geometry.location.lat();
-        var longitude = place.geometry.location.lng();
+        const latitude = place.geometry.location.lat();
+        const longitude = place.geometry.location.lng();
         this.container.setAttribute('data-lat-lon', latitude + ',' + longitude);
         this.setLatLon(latitude, longitude);
     }
@@ -177,59 +169,54 @@
      * @param {Number} latitude Latitude
      * @param {Number} longitude Longitude
      */
-    TwGeoselectElement.prototype.setLatLon = function (latitude, longitude) {
+    GeoselectElement.prototype.setLatLon = function (latitude, longitude) {
         // Set value of hidden latitude/longitude field
         this.latLon.value = (latitude + ',' + longitude);
 
-        // Add map marker after removing the old one
-        if (!this.marker) {
-            var markerIconPath = this.map.getDiv().attributes['data-marker'];
-            markerIconPath = markerIconPath ? markerIconPath.value : null;
-
-            if (markerIconPath) {
-                var icon = {
-                    url: markerIconPath,
-                    size: new google.maps.Size(48, 68),
-                    scaledSize: new google.maps.Size(32, 45),
-                    anchor: new google.maps.Point(12, 34)
-                };
+        // If we have a Google Map
+        if (this.map) {
+            // Add map marker after removing the old one
+            if (!this.marker) {
+                let markerIconPath = this.map.getDiv().attributes['data-marker'];
+                markerIconPath = markerIconPath ? markerIconPath.value : null;
+                this.marker = new google.maps.Marker({
+                    position: { lat: latitude, lng: longitude },
+                    map: this.map,
+                    icon: markerIconPath ? {
+                        url: markerIconPath,
+                        size: new google.maps.Size(48, 68),
+                        scaledSize: new google.maps.Size(32, 45),
+                        anchor: new google.maps.Point(12, 34)
+                    } : null
+                });
+            } else {
+                this.marker.setPosition({ lat: latitude, lng: longitude });
             }
 
-            this.marker = new google.maps.Marker({
-                position: { lat: latitude, lng: longitude },
-                map: this.map,
-                icon: icon
-            });
-        } else {
-            this.marker.setPosition({ lat: latitude, lng: longitude });
+            // Set map center and zoom in
+            this.map.setCenter({ lat: latitude, lng: longitude });
+            this.map.setZoom(17);
         }
 
-        // Set map center and zoom in
-        this.map.setCenter({ lat: latitude, lng: longitude });
-        this.map.setZoom(17);
         this.container.dispatchEvent(new CustomEvent('geoselect_change', {
-            detail: {
-                latitude: latitude,
-                longitude: longitude
-            }
+            detail: { latitude: latitude, longitude: longitude }
         }));
     }
 
     /**
      * Reset fields and map
      */
-    TwGeoselectElement.prototype.reset = function () {
+    GeoselectElement.prototype.reset = function () {
         if (this.marker) {
             this.marker.setMap(null);
             this.marker = null;
-            var mapElement = d.getElementById(this.container.id + '-map');
-            var center = {
+            const mapElement = d.getElementById(this.container.id + '-map');
+            this.map.setCenter({
                 lat: Number(mapElement.attributes['data-latitude'].value),
                 lng: Number(mapElement.attributes['data-longitude'].value)
-            };
+            });
         }
 
-        this.map.setCenter(center);
         this.map.setZoom(6);
 
         if (this.latLon.value) {
@@ -249,12 +236,12 @@
     /**
      * Add custom control to map for centering on the users current position
      */
-    TwGeoselectElement.prototype.addMyLocationControl = function () {
+    GeoselectElement.prototype.addMyLocationControl = function () {
         if (!navigator.geolocation) {
             return false;
         }
 
-        var controlDiv = d.createElement('div');
+        const controlDiv = d.createElement('div');
         controlDiv.innerHTML = d.getElementById('GoogleMap-MyLocation').innerHTML;
         controlDiv.index = 1;
         controlDiv.addEventListener('click', function (event) {
@@ -271,7 +258,10 @@
      * On DOMContentLoaded
      */
     d.addEventListener('DOMContentLoaded', function (event) {
-        new TwGeoselect();
+        const geoselectElements = d.querySelectorAll('.Geoselect');
+        if (geoselectElements.length) {
+            new Geoselect(geoselectElements);
+        }
     });
 })(document)
 
