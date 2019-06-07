@@ -12,6 +12,10 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 - Add "Center on my location" control to google map element
 - Geoselect element fires a javascript event "geoselect_change"
 
+## [1.4.1] - 2019-06-07
+### Bugfix
+- Fixed errors when trying to work with fe_user session when there is no fe_user
+
 ## [1.4.0] - 2019-04-29
 ### Added
 - Add new field "Geoselect" for TYPO3 form framework
