@@ -75,7 +75,7 @@ class GeoUtility implements SingletonInterface
         $serviceChain = '';
         /** @var AbstractService $serviceObject */
         while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
-            $serviceChain .= ', '.$serviceObject->getServiceKey();
+            $serviceChain .= ', ' . $serviceObject->getServiceKey();
             $serviceObject->init();
             yield $serviceObject;
         }
@@ -135,11 +135,11 @@ class GeoUtility implements SingletonInterface
      * Calculates the great-circle distance between two points, with
      * the Vincenty formula.
      *
-     * @param float $latitudeFrom  Latitude of start point in [deg decimal]
+     * @param float $latitudeFrom Latitude of start point in [deg decimal]
      * @param float $longitudeFrom Longitude of start point in [deg decimal]
-     * @param float $latitudeTo    Latitude of target point in [deg decimal]
-     * @param float $longitudeTo   Longitude of target point in [deg decimal]
-     * @param float $earthRadius   Mean earth radius in [m]
+     * @param float $latitudeTo Latitude of target point in [deg decimal]
+     * @param float $longitudeTo Longitude of target point in [deg decimal]
+     * @param float $earthRadius Mean earth radius in [m]
      *
      * @return float Distance between points in [m] (same as earthRadius)
      */
@@ -153,7 +153,7 @@ class GeoUtility implements SingletonInterface
 
         $lonDelta = $lonTo - $lonFrom;
         $a = pow(cos($latTo) * sin($lonDelta), 2) +
-             pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
+            pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
         $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
 
         $angle = atan2(sqrt($a), $b);
@@ -165,11 +165,12 @@ class GeoUtility implements SingletonInterface
      */
     public function getGeoLocation(): ?Position
     {
+        $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
+
         // If geolocation was already stored in session, return it
-        $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tw_geo') ?: [];
-        if (isset($sessionData['geoLocation'])) {
+        if ($sessionUtility->get('geoLocation')) {
             /** @var Position $position */
-            $position = $sessionData['geoLocation'];
+            $position = $sessionUtility->get('geoLocation');
             $position->setFromSession(true);
             return $position;
         }
@@ -177,8 +178,7 @@ class GeoUtility implements SingletonInterface
         // If debug position, return it
         if ($this->debugPosition) {
             // Store posision in session
-            $sessionData['geoLocation'] = $this->debugPosition;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
+            $sessionUtility->set('geoLocation', $this->debugPosition);
             return $this->debugPosition;
         }
 
@@ -187,10 +187,10 @@ class GeoUtility implements SingletonInterface
         foreach ($this->getServices('geolocation') as $geolocationService) {
             $position = $geolocationService->getGeolocation();
             if ($position instanceof Position) {
+                $sessionUtility->set('geoLocation', $position);
                 return $position;
             }
         }
-
         return null;
     }
 
@@ -208,14 +208,14 @@ class GeoUtility implements SingletonInterface
         /** @var AbstractGeocodingService $geocodingService */
         foreach ($this->getServices('geocoding') as $geocodingService) {
             $positions = $geocodingService->geocode($queryString, $limit);
-            if($positions instanceof PositionList && $positions->count()){
+            if ($positions instanceof PositionList && $positions->count()) {
                 // Return complete PositionList if no limit was set
-                if(!$limit){
+                if (!$limit) {
                     return $positions;
                 }
 
                 // Return first position
-                if($limit == 1){
+                if ($limit == 1) {
                     $positions->rewind();
                     return $positions->current();
                 }
@@ -224,11 +224,11 @@ class GeoUtility implements SingletonInterface
                 $returnPositions = new PositionList();
                 $positions->rewind();
                 $count = 0;
-                foreach($positions as $position){
-                   if($count >= $limit){
-                       break;
-                   }
-                   $returnPositions->add($position);
+                foreach ($positions as $position) {
+                    if ($count >= $limit) {
+                        break;
+                    }
+                    $returnPositions->add($position);
                 }
                 return $returnPositions;
             }
