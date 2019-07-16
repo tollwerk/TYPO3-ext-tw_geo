@@ -3,10 +3,10 @@
 plugin.tw_geo {
     view {
         # cat=plugin.tx_geo/file/10; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file.templateRootPath
-        templateRootPath = EXT:tw_afg/Resources/Private/Templates/
+        templateRootPath = EXT:tw_geo/Resources/Private/Templates/
         # cat=plugin.tx_geo/file/11; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file.partialRootPath
-        partialRootPath = EXT:tw_afg/Resources/Private/Partials/
+        partialRootPath = EXT:tw_geo/Resources/Private/Partials/
         # cat=plugin.tx_geo/file/12; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:file.layoutRootPath
-        layoutRootPath = EXT:tw_afg/Resources/Private/Layouts/
+        layoutRootPath = EXT:tw_geo/Resources/Private/Layouts/
     }
 }
