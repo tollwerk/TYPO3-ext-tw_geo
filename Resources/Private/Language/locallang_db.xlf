@@ -15,6 +15,24 @@
             <trans-unit id="file.partialRootPath">
                 <source>Partial Root Path</source>
             </trans-unit>
+            <trans-unit id="googleMaps">
+                <source>Google Maps</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.apiKey">
+                <source>API key</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.includeJs">
+                <source>Include Google Maps Javascript from maps.googleapis.com</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.mapMarker">
+                <source>Relative path to map marker image file</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.latitude">
+                <source>Default latitude</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.longitude">
+                <source>Default longitude</source>
+            </trans-unit>
             <trans-unit id="plugin.debug">
                 <source>tollwerk Geo Tools | Debug</source>
             </trans-unit>

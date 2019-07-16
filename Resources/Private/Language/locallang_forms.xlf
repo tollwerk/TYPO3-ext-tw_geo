@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z"
+          product-name="tw_crp">
+        <header/>
+        <body>
+            <trans-unit id="geoselect.search.label">
+                <source>Search by address</source>
+            </trans-unit>
+            <trans-unit id="geoselect.positions.label">
+                <source>Please select a location</source>
+            </trans-unit>
+            <trans-unit id="geoselect.submit.label">
+                <source>Find</source>
+            </trans-unit>
+            <trans-unit id="geoselect.map.myLocation.title">
+                <source>Center on my location</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

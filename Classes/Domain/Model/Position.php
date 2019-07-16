@@ -62,7 +62,7 @@ class Position
     /**
      * @var string
      */
-    protected $houseNumber = null;
+    protected $streetNumber = null;
 
 
     /** @var float  */
@@ -74,12 +74,21 @@ class Position
      */
     protected $longitude = null;
 
+    /**
+     * @var string
+     */
+    protected $displayName = null;
 
     /**
      * If true, this position is a debug position
      * @var bool
      */
     protected $debug = false;
+
+    /**
+     * @var string
+     */
+    protected $serviceClass = null;
 
     /**
      * If true, position was retrieved from feuser session
@@ -106,7 +115,7 @@ class Position
      */
     public function setCountryCode(string $countryCode = null)
     {
-        $this->countryCode = $countryCode;
+        $this->countryCode = strtoupper($countryCode);
     }
 
     /**
@@ -173,7 +182,53 @@ class Position
         $this->postalCode = $postalCode;
     }
 
+    /**
+     * @return string
+     */
+    public function getStreet(): string
+    {
+        return $this->street;
+    }
 
+    /**
+     * @param string $street
+     */
+    public function setStreet(string $street = null)
+    {
+        $this->street = $street;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStreetNumber(): string
+    {
+        return $this->streetNumber;
+    }
+
+    /**
+     * @param string $streetNumber
+     */
+    public function setStreetNumber(string $streetNumber = null)
+    {
+        $this->streetNumber = $streetNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * @param string $displayName
+     */
+    public function setDisplayName(string $displayName = null)
+    {
+        $this->displayName = $displayName;
+    }
 
     /**
      * @return float
@@ -237,5 +292,21 @@ class Position
     public function setFromSession(bool $fromSession)
     {
         $this->fromSession = $fromSession;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceClass(): string
+    {
+        return $this->serviceClass;
+    }
+
+    /**
+     * @param string $serviceClass
+     */
+    public function setServiceClass(string $serviceClass)
+    {
+        $this->serviceClass = $serviceClass;
     }
 }

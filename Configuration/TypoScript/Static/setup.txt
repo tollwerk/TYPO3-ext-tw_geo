@@ -1,8 +1,20 @@
-plugin.tw_geo {
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:tw_geo/Configuration/TypoScript/Main/10_main.t3s">
+
+plugin.tx_twgeo {
     view {
         templateRootPath = {$plugin.tx_twgeo.view.templateRootPath}
         partialRootPath = {$plugin.tx_twgeo.view.partialRootPath}
         layoutRootPath = {$plugin.tx_twgeo.view.layoutRootPath}
+    }
+
+    settings {
+        googleMaps {
+            apiKey = {$plugin.tx_twgeo.settings.googleMaps.apiKey}
+            includeJs = {$plugin.tx_twgeo.settings.googleMaps.includeJs}
+            mapMarker = {$plugin.tx_twgeo.settings.googleMaps.mapMarker}
+            latitude = {$plugin.tx_twgeo.settings.googleMaps.latitude}
+            longitude = {$plugin.tx_twgeo.settings.googleMaps.longitude}
+        }
     }
 }
 

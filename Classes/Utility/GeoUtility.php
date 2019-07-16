@@ -26,13 +26,16 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
-use Tollwerk\TwGeo\Service\Geocoding\GeocodingInterface;
-use Tollwerk\TwGeo\Service\Geolocation\GeolocationInterface;
+use Tollwerk\TwGeo\Domain\Model\PositionList;
+use Tollwerk\TwGeo\Service\Geocoding\AbstractGeocodingService;
+use Tollwerk\TwGeo\Service\Geolocation\AbstractGeolocationService;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 class GeoUtility implements SingletonInterface
@@ -56,6 +59,27 @@ class GeoUtility implements SingletonInterface
      * @var Position|null
      */
     protected $debugPosition = null;
+
+    /**
+     * Iterate through all available services classes of $type and $subtype
+     * and yield each one separately. Use this for chaining services
+     * until one of them returns a result or no service is left.
+     *
+     * @param string $type
+     * @param string $subtype
+     *
+     * @return \Generator
+     */
+    protected function getServices(string $type, string $subtype = '')
+    {
+        $serviceChain = '';
+        /** @var AbstractService $serviceObject */
+        while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
+            $serviceChain .= ', ' . $serviceObject->getServiceKey();
+            $serviceObject->init();
+            yield $serviceObject;
+        }
+    }
 
     public function __construct()
     {
@@ -99,8 +123,10 @@ class GeoUtility implements SingletonInterface
      * Converts degrees to radians
      *
      * @param float $degrees
+     *
+     * @return float
      */
-    public function degreesToRadians($degrees)
+    public function degreesToRadians($degrees): ?float
     {
         return $degrees * pi() / 180;
     }
@@ -109,15 +135,15 @@ class GeoUtility implements SingletonInterface
      * Calculates the great-circle distance between two points, with
      * the Vincenty formula.
      *
-     * @param float $latitudeFrom  Latitude of start point in [deg decimal]
+     * @param float $latitudeFrom Latitude of start point in [deg decimal]
      * @param float $longitudeFrom Longitude of start point in [deg decimal]
-     * @param float $latitudeTo    Latitude of target point in [deg decimal]
-     * @param float $longitudeTo   Longitude of target point in [deg decimal]
-     * @param float $earthRadius   Mean earth radius in [m]
+     * @param float $latitudeTo Latitude of target point in [deg decimal]
+     * @param float $longitudeTo Longitude of target point in [deg decimal]
+     * @param float $earthRadius Mean earth radius in [m]
      *
      * @return float Distance between points in [m] (same as earthRadius)
      */
-    public function getDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+    public function getDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo): ?float
     {
         // convert from degrees to radians
         $latFrom = deg2rad($latitudeFrom);
@@ -127,7 +153,7 @@ class GeoUtility implements SingletonInterface
 
         $lonDelta = $lonTo - $lonFrom;
         $a = pow(cos($latTo) * sin($lonDelta), 2) +
-             pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
+            pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
         $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
 
         $angle = atan2(sqrt($a), $b);
@@ -139,11 +165,12 @@ class GeoUtility implements SingletonInterface
      */
     public function getGeoLocation(): ?Position
     {
+        $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
+
         // If geolocation was already stored in session, return it
-        $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tw_geo') ?: [];
-        if (isset($sessionData['geoLocation'])) {
+        if ($sessionUtility->get('geoLocation')) {
             /** @var Position $position */
-            $position = $sessionData['geoLocation'];
+            $position = $sessionUtility->get('geoLocation');
             $position->setFromSession(true);
             return $position;
         }
@@ -151,36 +178,60 @@ class GeoUtility implements SingletonInterface
         // If debug position, return it
         if ($this->debugPosition) {
             // Store posision in session
-            $sessionData['geoLocation'] = $this->debugPosition;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
+            $sessionUtility->set('geoLocation', $this->debugPosition);
             return $this->debugPosition;
         }
 
         // Try to get the real position
-        /** @var GeolocationInterface $geoService */
-        if (is_object($geoService = GeneralUtility::makeInstanceService('geolocation'))) {
-            /** @var Position $position */
-            if ($position = $geoService->getGeolocation()) {
-                // Store posision in session
-                $sessionData['geoLocation'] = $position;
-                $GLOBALS['TSFE']->fe_user->setKey('ses', 'tw_geo', $sessionData);
+        /** @var AbstractGeolocationService $geolocationService */
+        foreach ($this->getServices('geolocation') as $geolocationService) {
+            $position = $geolocationService->getGeolocation();
+            if ($position instanceof Position) {
+                $sessionUtility->set('geoLocation', $position);
                 return $position;
             }
         }
         return null;
     }
 
+
     /**
-     * @param string $queryString
+     * Try to geocode an query string
      *
-     * @return null|Position
+     * @param string $queryString
+     * @param int $limit If 0, return all
+     *
+     * @return null|Position|PositionList
      */
-    public function geocode(string $queryString = null): ?Position
+    public function geocode(string $queryString, int $limit = 1)
     {
-        // Try to geocode the $address string
-        /** @var GeocodingInterface $geocodingService */
-        if (is_object($geocodingService = GeneralUtility::makeInstanceService('geocoding'))) {
-            return $geocodingService->geocode($queryString);
+        /** @var AbstractGeocodingService $geocodingService */
+        foreach ($this->getServices('geocoding') as $geocodingService) {
+            $positions = $geocodingService->geocode($queryString, $limit);
+            if ($positions instanceof PositionList && $positions->count()) {
+                // Return complete PositionList if no limit was set
+                if (!$limit) {
+                    return $positions;
+                }
+
+                // Return first position
+                if ($limit == 1) {
+                    $positions->rewind();
+                    return $positions->current();
+                }
+
+                // Return desired number of position
+                $returnPositions = new PositionList();
+                $positions->rewind();
+                $count = 0;
+                foreach ($positions as $position) {
+                    if ($count >= $limit) {
+                        break;
+                    }
+                    $returnPositions->add($position);
+                }
+                return $returnPositions;
+            }
         }
         return null;
     }

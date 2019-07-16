@@ -24,6 +24,22 @@ call_user_func(
             ]
         );
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            'tw_geo',
+            'geocoding',
+            \Tollwerk\TwGeo\Service\Geocoding\GoogleMapsService::class,
+            [
+                'title' => 'Google Maps',
+                'description' => 'Uses the Google Maps web API',
+                'subtype' => '',
+                'available' => true,
+                'priority' => 75,
+                'quality' => 75,
+                'os' => '',
+                'exec' => '',
+                'className' => \Tollwerk\TwGeo\Service\Geocoding\GoogleMapsService::class,
+            ]
+        );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             'tw_fh',
             'geolocation',
             \Tollwerk\TwGeo\Service\Geolocation\PhpGeoIPService::class,
@@ -63,6 +79,9 @@ call_user_func(
             ['Debug' => 'geolocation, geocoding'],
             ['Debug' => 'geolocation, geocoding']
         );
+
+        // Register hooks
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1556564992] = \Tollwerk\TwGeo\Hook\FormHook::class;
     }
 );
 

@@ -30,7 +30,7 @@ namespace Tollwerk\TwGeo\Service\Geolocation;
 use TYPO3\CMS\Core\Service\AbstractService;
 use Tollwerk\TwGeo\Domain\Model\Position;
 
-class PhpGeoIPService extends AbstractService implements GeolocationInterface
+class PhpGeoIPService extends AbstractGeolocationService
 {
     public function init()
     {
@@ -45,6 +45,7 @@ class PhpGeoIPService extends AbstractService implements GeolocationInterface
             $result = geoip_record_by_name($ip ?: $_SERVER['REMOTE_ADDR']);
             if ($result) {
                 $position = new Position();
+                $position->setServiceClass(self::class);
                 $position->setCountryCode($result['country_code']);
                 $position->setCountryName($result['country_name']);
                 $position->setRegion($result['region']);

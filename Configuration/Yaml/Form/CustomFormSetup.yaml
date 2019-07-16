@@ -1,0 +1,19 @@
+TYPO3:
+  CMS:
+    Form:
+      prototypes:
+        standard:
+          formElementsDefinition:
+            Form:
+              renderingOptions:
+                templateRootPaths:
+                  1556564992: 'EXT:tw_geo/Resources/Private/Templates/Form/'
+                partialRootPaths:
+                  1556564992: 'EXT:tw_geo/Resources/Private/Partials/Elements/Form/'
+                elementClassAttribute: 'Form'
+            Geoselect:
+              __inheritances:
+                10: 'TYPO3.CMS.Form.mixins.formElementMixins.FormElementMixin'
+              implementationClassName: 'Tollwerk\TwGeo\Domain\Model\FormElements\Geoselect'
+              renderingOptions:
+                _isCompositeFormElement: true
