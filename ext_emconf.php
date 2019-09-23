@@ -10,21 +10,21 @@
  * "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = [
+$EM_CONF['tw_geo'] = [
     'title' => 'tollwerk Geo Tools',
     'description' => 'Geolocalization, geocoding etc.',
     'category' => 'misc',
     'author' => 'tollwerk GmbH',
     'author_email' => 'info@tollwerk.de',
-    'state' => 'stable',
+    'state' => 'beta',
     'internal' => '',
     'uploadfolder' => '0',
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '1.3.0',
+    'version' => '1.4.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '8.7.19-9.5.99',
+            'typo3' => '8.7.19-10.0.99',
         ],
         'conflicts' => [],
         'suggests' => [],
