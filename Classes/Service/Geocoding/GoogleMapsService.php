@@ -38,6 +38,8 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -78,7 +80,7 @@ class GoogleMapsService extends AbstractGeocodingService
         $parameters = [
             'address' => $address,
             'key' => $settings['googleMaps']['apiKey'],
-            'language' => $GLOBALS['TSFE']->sys_language_isocode
+            'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode()
         ];
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
         $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);

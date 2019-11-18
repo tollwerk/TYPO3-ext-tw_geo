@@ -14,8 +14,9 @@ call_user_func(
         );
 
         // Register plugins
+        // @extensionScannerIgnoreLine
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'Tollwerk.TwGeo',
+            'TwGeo',
             'Debug',
             'LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:plugin.debug',
             'EXT:tw_geo/Resources/Public/Icons/Backend/Earth.svg'

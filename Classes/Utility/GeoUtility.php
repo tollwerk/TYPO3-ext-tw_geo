@@ -89,6 +89,7 @@ class GeoUtility implements SingletonInterface
             $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
             $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
             if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+                // @extensionScannerIgnoreLine
                 $this->debug = true;
                 $this->debugPosition = new Position();
                 $this->debugPosition->setDebug(true);
@@ -105,6 +106,7 @@ class GeoUtility implements SingletonInterface
             $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationUtility::class)->getCurrentConfiguration('tw_geo');
             $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug.ip']['value']);
             if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+                // @extensionScannerIgnoreLine
                 $this->debug = true;
                 $this->debugPosition = new Position();
                 $this->debugPosition->setDebug(true);
