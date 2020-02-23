@@ -6,6 +6,9 @@ TYPO3:
           formElementsDefinition:
             Form:
               renderingOptions:
+                translation:
+                  translationFiles:
+                    20: 'EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf'
                 templateRootPaths:
                   1556564992: 'EXT:tw_geo/Resources/Private/Templates/Form/'
                 partialRootPaths:

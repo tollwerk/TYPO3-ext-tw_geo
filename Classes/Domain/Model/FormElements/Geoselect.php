@@ -183,12 +183,12 @@ class Geoselect extends Section
 
         // Add search field
         $this->searchField = $this->createElement($this->identifier.'-search', 'Text');
-        $this->searchField->setLabel(
-            LocalizationUtility::translate(
-                'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.search.label',
-                'TwGeo'
-            )
-        );
+//        $this->searchField->setLabel(
+//            LocalizationUtility::translate(
+//                'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.search.label',
+//                'TwGeo'
+//            )
+//        );
 
         // Add hidden latitude;longitude field
         $this->latLonField = $this->createElement($this->identifier.'-lat-lon', 'Hidden');
