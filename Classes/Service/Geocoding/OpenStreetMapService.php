@@ -58,7 +58,7 @@ class OpenStreetMapService extends AbstractGeocodingService
         $parameters = [
             'q' => $address,
             'addressdetails' => 1,
-            'accept-language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode(),
+            'accept-language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language') ? $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode() : 'en',
         ];
 
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
