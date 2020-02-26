@@ -8,11 +8,11 @@ TYPO3:
               renderingOptions:
                 translation:
                   translationFiles:
-                    20: 'EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf'
+                    5: 'EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf'
                 templateRootPaths:
-                  1556564992: 'EXT:tw_geo/Resources/Private/Templates/Form/'
+                  5: 'EXT:tw_geo/Resources/Private/Templates/Form/'
                 partialRootPaths:
-                  1556564992: 'EXT:tw_geo/Resources/Private/Partials/Elements/Form/'
+                  5: 'EXT:tw_geo/Resources/Private/Partials/Elements/Form/'
                 elementClassAttribute: 'Form'
             Geoselect:
               __inheritances:
