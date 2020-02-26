@@ -4,14 +4,16 @@
           product-name="tw_crp">
         <header/>
         <body>
-            <trans-unit id="geoselect.search.label">
+            <!-- Default global translations for geoselect fields. Can be overwritten by other locallang files -->
+            <trans-unit id="element.geoselect-search.properties.label">
                 <source>Search by address</source>
             </trans-unit>
+
             <trans-unit id="geoselect.positions.label">
                 <source>Please select a location</source>
             </trans-unit>
             <trans-unit id="geoselect.submit.label">
-                <source>Find</source>
+                <source>Search</source>
             </trans-unit>
             <trans-unit id="geoselect.map.myLocation.title">
                 <source>Center on my location</source>
