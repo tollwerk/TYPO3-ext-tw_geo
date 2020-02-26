@@ -38,8 +38,6 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -71,16 +69,18 @@ class GoogleMapsService extends AbstractGeocodingService
     public function geocode(string $address = null): ?PositionList
     {
         // Check if all necessary typoscript settings are set and return null if not
-        $settings = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TwGeo');
-        if (empty($settings['googleMaps']['apiKey'])) {
+        $typoscript = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $googleMapsApiKey = $typoscript['plugin.']['tx_twgeo.']['settings.']['googleMaps.']['apiKey'] ? : null;
+
+        if (!$googleMapsApiKey) {
             return null;
-        }
+        }  
 
         // Call web API
         $parameters = [
             'address' => $address,
-            'key' => $settings['googleMaps']['apiKey'],
-            'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode()
+            'key' => $googleMapsApiKey,
+            'language' => $GLOBALS['TSFE']->sys_language_isocode
         ];
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
         $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
