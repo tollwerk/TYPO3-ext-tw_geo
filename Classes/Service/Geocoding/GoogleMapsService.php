@@ -80,7 +80,7 @@ class GoogleMapsService extends AbstractGeocodingService
         $parameters = [
             'address' => $address,
             'key' => $googleMapsApiKey,
-            'language' => $GLOBALS['TSFE']->sys_language_isocode
+            'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language') ? $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode() : 'en',
         ];
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
         $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
