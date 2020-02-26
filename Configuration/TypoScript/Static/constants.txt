@@ -13,11 +13,11 @@ plugin.tx_twgeo {
 
     settings {
         googleMaps {
-            # cat=plugin.tx_geo/googleMaps/10; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.apiKey
-            apiKey =
-
-            # cat=plugin.tx_geo/googleMaps/20; type=boolean; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.includeJs
+            # cat=plugin.tx_geo/googleMaps/10; type=boolean; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.includeJs
             includeJs = 0
+
+            # cat=plugin.tx_geo/googleMaps/20; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.apiKey
+            apiKey =
 
             # cat=plugin.tx_geo/googleMaps/30; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.mapMarker
             mapMarker = typo3conf/ext/tw_geo/Resources/Public/Icons/MapMarker.png
@@ -27,6 +27,11 @@ plugin.tx_twgeo {
 
             # cat=plugin.tx_geo/googleMaps/41; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.longitude
             longitude = 10.447683
+
+            restrictions {
+                # cat=plugin.tx_geo/googleMaps/50; type=string; label=LLL:EXT:tw_geo/Resources/Private/Language/locallang_db.xlf:googleMaps.restrictions.countries
+                countries = de
+            }
         }
     }
 }

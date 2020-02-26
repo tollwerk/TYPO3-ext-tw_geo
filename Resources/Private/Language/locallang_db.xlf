@@ -22,7 +22,7 @@
                 <source>API key</source>
             </trans-unit>
             <trans-unit id="googleMaps.includeJs">
-                <source>Include Google Maps Javascript from maps.googleapis.com</source>
+                <source>Include Javascript (local and external libraries)</source>
             </trans-unit>
             <trans-unit id="googleMaps.mapMarker">
                 <source>Relative path to map marker image file</source>
@@ -32,6 +32,9 @@
             </trans-unit>
             <trans-unit id="googleMaps.longitude">
                 <source>Default longitude</source>
+            </trans-unit>
+            <trans-unit id="googleMaps.restrictions.countries">
+                <source>Country restrictions (ISO2 country code, comma separated)</source>
             </trans-unit>
             <trans-unit id="plugin.debug">
                 <source>tollwerk Geo Tools | Debug</source>

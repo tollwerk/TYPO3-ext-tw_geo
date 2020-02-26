@@ -7,10 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Each entry will be separated into four possible groups: **Added**, **Removed**, **Changed** and **Fixed**.
 
 ## [Planned]
-- Add Google Maps Autocomplete to Geoselect form field
-- Add Google Map to Geoselect form field
 - Add "Center on my location" control to google map element
 - Geoselect element fires a javascript event "geoselect_change"
+- Optimize javascript
+
+## [2.1.0] - 2019-12-17
+### Added
+- Add Google Maps Autocomplete to Geoselect form field
+- Add Google Map to Geoselect form field
+- Add optional countries restriction to Google Maps Autocomplete
+
+
+### Changed
+- Reenable local javascript
+
+
+## [1.4.2] - 2019-11-18
+### Added
+- Add TYPO3 10.x compatibility
+
+### Changed
+- Change TYPO3 version constraint to "8.7.19-10.1.99"
+- Change extension state to stable
 
 ## [1.4.1] - 2019-06-07
 ### Bugfix

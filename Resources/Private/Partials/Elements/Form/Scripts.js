@@ -58,7 +58,12 @@
      * Try to add autocomplete to search field
      */
     GeoselectElement.prototype.initAutocomplete = function () {
-        this.searchAutocomplete = new google.maps.places.Autocomplete(this.search);
+
+        this.searchAutocomplete = new google.maps.places.Autocomplete(this.search, {
+            componentRestrictions: {
+                country: this.container.hasAttribute('data-restrict-countries') ? String(this.container.getAttribute('data-restrict-countries')).split(',').map(function(item){return item.trim()}) : []
+            }
+        });
         this.searchAutocomplete.addListener('place_changed', this.handle_autocompletePlaceChanged.bind(this));
 
         // If the focus is still on the autocomplete element,

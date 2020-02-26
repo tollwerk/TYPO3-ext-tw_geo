@@ -76,11 +76,12 @@ call_user_func(
         );
 
         // Configure plugins
+        // @extensionScannerIgnoreLine
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Tollwerk.TwGeo',
+            'TwGeo',
             'Debug',
-            ['Debug' => 'geolocation, geocoding'],
-            ['Debug' => 'geolocation, geocoding']
+            [\Tollwerk\TwGeo\Controller\DebugController::class => 'geolocation, geocoding'],
+            [\Tollwerk\TwGeo\Controller\DebugController::class => 'geolocation, geocoding']
         );
 
         // Register hooks

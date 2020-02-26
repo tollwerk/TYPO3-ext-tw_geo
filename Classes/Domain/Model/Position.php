@@ -267,6 +267,7 @@ class Position
      */
     public function isDebug(): bool
     {
+        // @extensionScannerIgnoreLine
         return $this->debug;
     }
 
@@ -275,6 +276,7 @@ class Position
      */
     public function setDebug(bool $debug)
     {
+        // @extensionScannerIgnoreLine
         $this->debug = $debug;
     }
 

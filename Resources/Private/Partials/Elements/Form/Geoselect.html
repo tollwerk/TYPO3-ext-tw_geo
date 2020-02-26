@@ -10,7 +10,7 @@
       data-namespace-typo3-fluid="true">
 
     <formvh:renderRenderable renderable="{element}">
-        <fieldset id="{element.uniqueIdentifier}" class="FormField Geoselect FormFieldset{f:if(condition: element.properties.elementClassAttribute, then: ' {element.properties.elementClassAttribute}')}"{f:if(condition: element.latLon, then: ' data-lat-lon="{element.latLon}"')}>
+        <fieldset id="{element.uniqueIdentifier}" class="FormField Geoselect FormFieldset{f:if(condition: element.properties.elementClassAttribute, then: ' {element.properties.elementClassAttribute}')}"{f:if(condition: element.latLon, then: ' data-lat-lon="{element.latLon}"')}{f:if(condition: element.properties.mapRestrictions.countries, then: ' data-restrict-countries="{element.properties.mapRestrictions.countries}"')}>
             <f:comment><!-- Fieldset label --></f:comment>
             <f:variable name="label" value="{f:if(condition: element.label, then: element.label, else: '{formvh:translateElementProperty(element: element, property: \'label\')}')}"/>
             <f:if condition="{label}">

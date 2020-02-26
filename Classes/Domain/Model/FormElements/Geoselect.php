@@ -164,22 +164,28 @@ class Geoselect extends Section
         if (!empty($settings['googleMaps']['includeJs']) && !empty($settings['googleMaps']['apiKey'])) {
             $googleMapsParameters                                             = [
                 'key'      => $settings['googleMaps']['apiKey'],
-                'language' => $GLOBALS['TSFE']->sys_language_isocode,
+                'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode(),
             ];
             $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js'] = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&'.http_build_query($googleMapsParameters).'"></script>';
             $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_geoselect_js'] = '<script src="/typo3conf/ext/tw_geo/Resources/Public/tw_geo-default.min.js"></script>';
-            $this->setProperty(
-                'mapMarker',
-                GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$settings['googleMaps']['mapMarker']
-            );
-            $this->setProperty(
-                'mapCenter',
-                [
-                    'latitude'  => $settings['googleMaps']['latitude'],
-                    'longitude' => $settings['googleMaps']['longitude']
-                ]
-            );
         }
+        $this->setProperty(
+            'mapMarker',
+            GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$settings['googleMaps']['mapMarker']
+        );
+        $this->setProperty(
+            'mapCenter',
+            [
+                'latitude'  => $settings['googleMaps']['latitude'],
+                'longitude' => $settings['googleMaps']['longitude']
+            ]
+        );
+        $this->setProperty('mapRestrictions', [
+            'countries' => $settings['googleMaps']['restrictions']['countries']
+        ]);
+
+
+
 
         // Add search field
         $this->searchField = $this->createElement($this->identifier.'-search', 'Text');

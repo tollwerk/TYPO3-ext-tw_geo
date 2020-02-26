@@ -20,3 +20,9 @@ TYPO3:
               implementationClassName: 'Tollwerk\TwGeo\Domain\Model\FormElements\Geoselect'
               renderingOptions:
                 _isCompositeFormElement: true
+            StaticMap:
+              __inheritances:
+                10: 'TYPO3.CMS.Form.mixins.formElementMixins.FormElementMixin'
+              implementationClassName: 'Tollwerk\TwGeo\Domain\Model\FormElements\StaticMap'
+              properties:
+                containerClassAttribute: 'FormField--static-map'

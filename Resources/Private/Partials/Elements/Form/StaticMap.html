@@ -1,0 +1,20 @@
+<f:comment><!--
+
+    Geoselector
+
+    @param GenericFormElement element          Fieldset element
+
+--></f:comment>
+<html xmlns:f="https://xsd.helhum.io/ns/typo3/cms-fluid/master/ViewHelpers"
+      xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+    <formvh:renderRenderable renderable="{element}">
+        <f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center={element.properties.latitude},{element.properties.longitude}&zoom={element.properties.zoom}&size={element.properties.size}&scale={element.properties.scale}&maptype={element.properties.maptype}
+&markers=color:red%7C{element.properties.latitude},{element.properties.longitude}&key=AIzaSyCHl2BNkhWjcgrzkLkgyGqb-XUVno4e5OY" />
+        </f:render>
+    </formvh:renderRenderable>
+
+
+</html>
