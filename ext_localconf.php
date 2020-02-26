@@ -6,6 +6,9 @@ if (!defined('TYPO3_MODE')) {
 
 call_user_func(
     function() {
+        // Register fluid ViewHelper namespace
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['geo'] = ['Tollwerk\\TwGeo\\ViewHelpers'];
+
         // Register or change services
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             'tw_geo',
