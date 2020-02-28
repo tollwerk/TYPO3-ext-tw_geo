@@ -102,6 +102,7 @@
             streetViewControl: false,
             rotateControl: false,
             fullscreenControl: false,
+            zoomControl: false,
             mapTypeControl: false,
             zoomControlOptions: { position: google.maps.ControlPosition.LEFT_TOP },
             styles: [
@@ -142,9 +143,6 @@
     GeoselectElement.prototype.onInitialize = function () {
         if (this.position) {
             this.position.parentNode.removeChild(this.position);
-        }
-        if (this.submit) {
-            this.submit.parentNode.removeChild(this.submit);
         }
         this.container.classList.add('Geoselect--js');
         this.container.geoselect = this;
