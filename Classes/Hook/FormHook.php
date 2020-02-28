@@ -43,6 +43,10 @@ use Tollwerk\TwGeo\Utility\GeoUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 
+/**
+ * Class FormHook
+ * @package Tollwerk\TwGeo\Hook
+ */
 class FormHook
 {
     /**
