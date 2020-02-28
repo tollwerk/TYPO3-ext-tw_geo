@@ -43,6 +43,10 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
+/**
+ * Class GoogleMapsService
+ * @package Tollwerk\TwGeo\Service\Geocoding
+ */
 class GoogleMapsService extends AbstractGeocodingService
 {
     const STATUS_OK = 'OK';
@@ -70,19 +74,19 @@ class GoogleMapsService extends AbstractGeocodingService
     {
         // Check if all necessary typoscript settings are set and return null if not
         $typoscript = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        $googleMapsApiKey = $typoscript['plugin.']['tx_twgeo.']['settings.']['googleMaps.']['apiKey'] ? : null;
+        $googleMapsApiKey = $typoscript['plugin.']['tx_twgeo.']['settings.']['googleMaps.']['apiKey'] ?: null;
 
         if (!$googleMapsApiKey) {
             return null;
-        }  
+        }
 
         // Call web API
         $parameters = [
             'address' => $address,
             'key' => $googleMapsApiKey,
-            'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language') ? $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode() : 'en',
+            'language' => ($language = $this->getCurrentFrontendLanguage()) ? $language->getTwoLetterIsoCode() : 'en',
         ];
-        $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
+        $requestUri = $this->baseUrl . '&' . http_build_query($parameters);
         $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
         $data = json_decode($result);
 
@@ -90,7 +94,7 @@ class GoogleMapsService extends AbstractGeocodingService
         if ($data->status == self::STATUS_OK && count($data->results)) {
             $positions = new PositionList();
             /** @var \stdClass $result */
-            foreach($data->results as $result){
+            foreach ($data->results as $result) {
                 $position = new Position($result->geometry->location->lat, $result->geometry->location->lng);
                 $position->setServiceClass(self::class);
                 $position->setDisplayName($result->formatted_address);

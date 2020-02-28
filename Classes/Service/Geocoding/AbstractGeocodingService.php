@@ -1,6 +1,6 @@
 <?php
 /**
- * Schwedenflotte
+ * TwGeo
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
@@ -13,7 +13,7 @@
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -33,11 +33,32 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use TYPO3\CMS\Core\Service\AbstractService;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
+/**
+ * Class AbstractGeocodingService
+ * @package Tollwerk\TwGeo\Service\Geocoding
+ */
 abstract class AbstractGeocodingService extends AbstractService implements GeocodingInterface
 {
-
+    /**
+     * Return the current frontend language
+     *
+     * @return SiteLanguage|null
+     */
+    public function getCurrentFrontendLanguage(): ?SiteLanguage
+    {
+        if ($GLOBALS['TYPO3_REQUEST']) {
+            /** @var \TYPO3\CMS\Core\Site\Entity\SiteLanguage $language */
+            $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
+            if ($language instanceof SiteLanguage) {
+                return $language;
+            }
+        }
+        return null;
+    }
 }
