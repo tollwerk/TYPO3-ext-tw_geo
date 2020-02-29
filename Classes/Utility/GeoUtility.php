@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 class GeoUtility implements SingletonInterface
@@ -88,6 +87,7 @@ class GeoUtility implements SingletonInterface
             // For TYPO3 v9
             $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
             $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
+
             if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
                 // @extensionScannerIgnoreLine
                 $this->debug = true;
@@ -169,19 +169,19 @@ class GeoUtility implements SingletonInterface
     {
         $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
 
+        // If debug position, return it
+        if ($this->debugPosition) {
+            // Store posision in session
+            $sessionUtility->set('geoLocation', $this->debugPosition);
+            return $this->debugPosition;
+        }
+
         // If geolocation was already stored in session, return it
         if ($sessionUtility->get('geoLocation')) {
             /** @var Position $position */
             $position = $sessionUtility->get('geoLocation');
             $position->setFromSession(true);
             return $position;
-        }
-
-        // If debug position, return it
-        if ($this->debugPosition) {
-            // Store posision in session
-            $sessionUtility->set('geoLocation', $this->debugPosition);
-            return $this->debugPosition;
         }
 
         // Try to get the real position
