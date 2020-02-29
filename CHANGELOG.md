@@ -10,6 +10,10 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 - Add "Center on my location" control to google map element
 - Geoselect element fires a javascript event "geoselect_change"
 - Optimize javascript
+- Add custom map styling: `window.googleMapStyles`
+- Add new form element: StaticMap 
+- Bugfixes for debug mode
+- Bugfixes for using geocoding services in backend context like scheduler tasks
 
 ## [2.1.0] - 2019-12-17
 ### Added

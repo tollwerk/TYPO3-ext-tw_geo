@@ -59,6 +59,18 @@ Usable inside FormFactory classes
 $geoselectField = $page->createElement('yourFieldName','Geoselect');
 ```
 
+#### StaticMap
+A static google map
+```php
+/** @var TYPO3\CMS\Form\Domain\Model\FormElements\Page $page */
+$geoselectField = $page->createElement('yourFieldName','StaticMap');
+
+// See \Tollwerk\TwGeo\Domain\Model\FormElementy->properties for more 
+$geoselectField->setProperty('latitude', 0);
+$geoselectField->setProperty('longitude', 0);
+```
+
+
 
 
 

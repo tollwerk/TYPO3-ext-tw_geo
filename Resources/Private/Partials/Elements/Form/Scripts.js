@@ -61,7 +61,9 @@
 
         this.searchAutocomplete = new google.maps.places.Autocomplete(this.search, {
             componentRestrictions: {
-                country: this.container.hasAttribute('data-restrict-countries') ? String(this.container.getAttribute('data-restrict-countries')).split(',').map(function(item){return item.trim()}) : []
+                country: this.container.hasAttribute('data-restrict-countries') ? String(this.container.getAttribute('data-restrict-countries')).split(',').map(function (item) {
+                    return item.trim()
+                }) : []
             }
         });
         this.searchAutocomplete.addListener('place_changed', this.handle_autocompletePlaceChanged.bind(this));
@@ -83,6 +85,33 @@
     }
 
     /**
+     * Default map styles
+     *
+     * @type {*[]}
+     */
+    GeoselectElement.defaultStyles = [
+        {
+            "featureType": "poi",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "color": "#9d9d9d"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#9d9d9d"
+                }
+            ]
+        }
+    ]
+    ;
+
+    /**
      * Try to initialize the dynamic google map
      *
      * @returns {google.maps.Map} Google Map
@@ -93,46 +122,23 @@
             return null;
         }
 
+        let latLon = this.container.hasAttribute('data-lat-lon') ? this.container.attributes['data-lat-lon'].value.split(',') : [];
         const map = new google.maps.Map(mapElement, {
-            zoom: 6,
+            zoom: 12,
             center: {
-                lat: Number(mapElement.attributes['data-latitude'].value),
-                lng: Number(mapElement.attributes['data-longitude'].value)
+                lat: Number((latLon.length === 2) ? latLon[0] : mapElement.attributes['data-latitude'].value),
+                lng: Number((latLon.length === 2) ? latLon[1] : mapElement.attributes['data-longitude'].value)
             },
             streetViewControl: false,
             rotateControl: false,
             fullscreenControl: false,
             zoomControl: false,
             mapTypeControl: false,
-            zoomControlOptions: { position: google.maps.ControlPosition.LEFT_TOP },
-            styles: [
-                {
-                    "featureType": "poi",
-                    "elementType": "labels.icon",
-                    "stylers": [
-                        {
-                            "color": "#9d9d9d"
-                        }
-                    ]
-                },
-                {
-                    "featureType": "poi",
-                    "elementType": "labels.text.fill",
-                    "stylers": [
-                        {
-                            "color": "#9d9d9d"
-                        }
-                    ]
-                }
-            ]
+            zoomControlOptions: {position: google.maps.ControlPosition.LEFT_TOP},
+            styles: window.googleMapStyles ? window.googleMapStyles : GeoselectElement.defaultStyles
+
         });
         // this.addMyLocationControl();
-
-        if (this.container.attributes['data-lat-lon']) {
-            const latLon = this.container.attributes['data-lat-lon'].value.split(',');
-            this.setLatLon(Number(latLon[0]), Number(latLon[1]));
-        }
-
         return map;
     }
 
@@ -175,7 +181,6 @@
     GeoselectElement.prototype.setLatLon = function (latitude, longitude) {
         // Set value of hidden latitude/longitude field
         this.latLon.value = (latitude + ',' + longitude);
-
         // If we have a Google Map
         if (this.map) {
             // Add map marker after removing the old one
@@ -183,7 +188,7 @@
                 let markerIconPath = this.map.getDiv().attributes['data-marker'];
                 markerIconPath = markerIconPath ? markerIconPath.value : null;
                 this.marker = new google.maps.Marker({
-                    position: { lat: latitude, lng: longitude },
+                    position: {lat: latitude, lng: longitude},
                     map: this.map,
                     icon: markerIconPath ? {
                         url: markerIconPath,
@@ -193,16 +198,18 @@
                     } : null
                 });
             } else {
-                this.marker.setPosition({ lat: latitude, lng: longitude });
+                this.marker.setPosition({lat: latitude, lng: longitude});
             }
 
+            alert('setCenter: ' + latitude + ' - ' + longitude);
+
             // Set map center and zoom in
-            this.map.setCenter({ lat: latitude, lng: longitude });
+            this.map.setCenter({lat: latitude, lng: longitude});
             this.map.setZoom(17);
         }
 
         this.container.dispatchEvent(new CustomEvent('geoselect_change', {
-            detail: { latitude: latitude, longitude: longitude }
+            detail: {latitude: latitude, longitude: longitude}
         }));
     }
 
