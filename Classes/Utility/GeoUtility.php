@@ -172,7 +172,6 @@ class GeoUtility implements SingletonInterface
         // If debug position, return it
         if ($this->debugPosition) {
             // Store posision in session
-            $sessionUtility->set('geoLocation', $this->debugPosition);
             return $this->debugPosition;
         }
 
