@@ -59,6 +59,12 @@
      */
     GeoselectElement.prototype.initAutocomplete = function () {
 
+        if(this.search.hasAttribute('autocomplete')) {
+            if(this.search.getAttribute('autocomplete') === 'off') {
+                return null;
+            }
+        };
+
         this.searchAutocomplete = new google.maps.places.Autocomplete(this.search, {
             componentRestrictions: {
                 country: this.container.hasAttribute('data-restrict-countries') ? String(this.container.getAttribute('data-restrict-countries')).split(',').map(function (item) {
@@ -71,7 +77,9 @@
         // If the focus is still on the autocomplete element,
         // we want to cancel any form submission, so the user can
         // select the autocomplete suggestions by keyboard, usually hitting enter.
+
         findAncenstorByTagName(this.search, 'form').addEventListener('submit', function (event) {
+            event.currentTarget.classList.add('loading');
             if (d.activeElement == this.search) {
                 event.preventDefault();
             }
@@ -108,8 +116,7 @@
                 }
             ]
         }
-    ]
-    ;
+    ];
 
     /**
      * Try to initialize the dynamic google map
@@ -152,6 +159,7 @@
         }
         this.container.classList.add('Geoselect--js');
         this.container.geoselect = this;
+        this.container.dispatchEvent(new CustomEvent('geoselect_init'));
     }
 
     /**
@@ -200,8 +208,6 @@
             } else {
                 this.marker.setPosition({lat: latitude, lng: longitude});
             }
-
-            alert('setCenter: ' + latitude + ' - ' + longitude);
 
             // Set map center and zoom in
             this.map.setCenter({lat: latitude, lng: longitude});
