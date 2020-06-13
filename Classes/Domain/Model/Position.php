@@ -1,4 +1,5 @@
 <?php
+
 /***************************************************************
  *
  *  Copyright notice
@@ -26,7 +27,11 @@
 
 namespace Tollwerk\TwGeo\Domain\Model;
 
-
+/**
+ * Position
+ *
+ * @package Tollwerk\TwGeo\Domain\Model
+ */
 class Position
 {
     /**
@@ -65,9 +70,8 @@ class Position
     protected $streetNumber = null;
 
 
-    /** @var float  */
+    /** @var float */
     protected $latitude = null;
-
 
     /**
      * @var float
@@ -98,7 +102,7 @@ class Position
 
     public function __construct(float $latitude = null, float $longitude = null)
     {
-        $this->latitude = $latitude;
+        $this->latitude  = $latitude;
         $this->longitude = $longitude;
     }
 

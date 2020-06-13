@@ -2,12 +2,12 @@
 /**
  * RWS TYPO3 v9
  *
- * @category Tollwerk
- * @package Tollwerk\TwGeo
+ * @category   Tollwerk
+ * @package    Tollwerk\TwGeo
  * @subpackage Tollwerk\TwGeo\Utility
- * @author Klaus Fiedler <klaus@tollwerk.de> / @jkphl
- * @copyright Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Klaus Fiedler <klaus@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
@@ -35,25 +35,31 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
-
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
+/**
+ * Session Utility
+ *
+ * @package Tollwerk\TwGeo\Utility
+ */
 class SessionUtility implements SingletonInterface
 {
     /**
      * The session key
+     *
+     * @var string
      */
     const KEY = 'tw_geo';
 
     /**
      * The frontend user session for key 'tw_geo'
+     *
      * @var array|null
      */
     protected $session = null;
 
     /**
-     * FrontendUserUtility constructor.
+     * Constructor
      */
     public function __construct()
     {
@@ -67,6 +73,7 @@ class SessionUtility implements SingletonInterface
      *
      * @param string $key
      * @param mixed $value
+     *
      * @return bool Returns true if value could be stored
      */
     public function set(string $key, $value): bool
@@ -76,6 +83,7 @@ class SessionUtility implements SingletonInterface
         }
         $this->session[$key] = $value;
         $GLOBALS['TSFE']->fe_user->setKey('ses', self::KEY, $this->session);
+
         return true;
     }
 
@@ -83,6 +91,7 @@ class SessionUtility implements SingletonInterface
      * Get a session value
      *
      * @param string $key
+     *
      * @return mixed|null
      */
     public function get(string $key)
