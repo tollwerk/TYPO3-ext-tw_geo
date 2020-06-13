@@ -24,6 +24,7 @@ call_user_func(
 
         // Register flexforms for plugins
         $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['twgeo_debug'] = 'pi_flexform';
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('twgeo_debug','FILE:EXT:tw_geo/Configuration/FlexForm/Debug.xml');
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('twgeo_debug',
+            'FILE:EXT:tw_geo/Configuration/FlexForm/Debug.xml');
     }
 );

@@ -24,6 +24,8 @@
     }
   ],
   "require": {
+    "typo3/cms-core": "^10.0",
+    "typo3/cms-form": "^10.0",
     "tollwerk/tw-base": ">=2.3.0"
   }
 }
