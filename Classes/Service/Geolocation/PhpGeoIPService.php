@@ -4,7 +4,7 @@
  *
  *  Copyright notice
  *
- *  (c) 2019 Klaus Fiedler <klaus@tollwerk.de>, tollwerk® GmbH
+ *  © 2020 Klaus Fiedler <klaus@tollwerk.de>, tollwerk® GmbH
  *
  *  All rights reserved
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * TwGeo
+ * Tollwerk Geo Tools
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
@@ -41,7 +41,6 @@ use Tollwerk\TwGeo\Utility\CurlUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class GoogleMapsService
@@ -49,19 +48,18 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 class GoogleMapsService extends AbstractGeocodingService
 {
-    const STATUS_OK = 'OK';
-
     /**
+     * Google Maps base URL
+     *
      * @var string
      */
     protected $baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
-
     /**
-     * @var array
+     * Status
+     *
+     * @var string
      */
-    protected $httpRequestHeader = [
-        'User-Agent: tollwerk/TYPO3-ext-tw_geo',
-    ];
+    const STATUS_OK = 'OK';
 
     /**
      * Get geocoding result for address string
@@ -73,7 +71,8 @@ class GoogleMapsService extends AbstractGeocodingService
     public function geocode(string $address = null): ?PositionList
     {
         // Check if all necessary typoscript settings are set and return null if not
-        $typoscript = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $typoscript       = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)
+                                          ->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
         $googleMapsApiKey = $typoscript['plugin.']['tx_twgeo.']['settings.']['googleMaps.']['apiKey'] ?: null;
 
         if (!$googleMapsApiKey) {
@@ -82,13 +81,13 @@ class GoogleMapsService extends AbstractGeocodingService
 
         // Call web API
         $parameters = [
-            'address' => $address,
-            'key' => $googleMapsApiKey,
+            'address'  => $address,
+            'key'      => $googleMapsApiKey,
             'language' => ($language = $this->getCurrentFrontendLanguage()) ? $language->getTwoLetterIsoCode() : 'en',
         ];
-        $requestUri = $this->baseUrl . '&' . http_build_query($parameters);
-        $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
-        $data = json_decode($result);
+        $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
+        $result     = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
+        $data       = json_decode($result);
 
         // Return results
         if ($data->status == self::STATUS_OK && count($data->results)) {
@@ -99,7 +98,7 @@ class GoogleMapsService extends AbstractGeocodingService
                 $position->setServiceClass(self::class);
                 $position->setDisplayName($result->formatted_address);
                 foreach ($result->address_components as $addressComponent) {
-                    $addressComponentType = $addressComponent->types[0];
+                    $addressComponentType  = $addressComponent->types[0];
                     $addressComponentValue = $addressComponent->long_name;
 
                     switch ($addressComponentType) {
@@ -126,8 +125,10 @@ class GoogleMapsService extends AbstractGeocodingService
                 }
                 $positions->append($position);
             }
+
             return $positions;
         }
+
         return null;
     }
 }

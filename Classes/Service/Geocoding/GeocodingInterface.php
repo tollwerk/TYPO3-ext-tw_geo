@@ -1,9 +1,10 @@
 <?php
+
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2019 Klaus Fiedler <klaus@tollwerk.de>, tollwerk® GmbH
+ *  © 2020 Klaus Fiedler <klaus@tollwerk.de>, tollwerk® GmbH
  *
  *  All rights reserved
  *
@@ -26,7 +27,6 @@
 
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
-use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 
 interface GeocodingInterface

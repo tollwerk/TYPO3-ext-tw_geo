@@ -1,6 +1,7 @@
 <?php
+
 /**
- * TwGeo
+ * Tollwerk Geo Tools
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
@@ -33,18 +34,25 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
- * Class AbstractGeocodingService
+ * Abstract Geocoding Service
+ *
  * @package Tollwerk\TwGeo\Service\Geocoding
  */
 abstract class AbstractGeocodingService extends AbstractService implements GeocodingInterface
 {
+    /**
+     * HTTP Headers
+     *
+     * @var array
+     */
+    protected $httpRequestHeader = ['User-Agent: tollwerk/TYPO3-ext-tw_geo'];
+
     /**
      * Return the current frontend language
      *
@@ -53,12 +61,13 @@ abstract class AbstractGeocodingService extends AbstractService implements Geoco
     public function getCurrentFrontendLanguage(): ?SiteLanguage
     {
         if ($GLOBALS['TYPO3_REQUEST']) {
-            /** @var \TYPO3\CMS\Core\Site\Entity\SiteLanguage $language */
+            /** @var SiteLanguage $language */
             $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
             if ($language instanceof SiteLanguage) {
                 return $language;
             }
         }
+
         return null;
     }
 }

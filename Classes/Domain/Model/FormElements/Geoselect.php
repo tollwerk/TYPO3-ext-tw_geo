@@ -1,6 +1,6 @@
 <?php
 /**
- * TwGeo
+ * Tollwerk Geo Tools
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo

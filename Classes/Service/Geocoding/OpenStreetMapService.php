@@ -1,6 +1,7 @@
 <?php
+
 /**
- * TwGeo
+ * Tollwerk Geo Tools
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
@@ -40,22 +41,18 @@ use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
 
 /**
- * Class OpenStreetMapService
+ * OpenStreetMap Service
+ *
  * @package Tollwerk\TwGeo\Service\Geocoding
  */
 class OpenStreetMapService extends AbstractGeocodingService
 {
     /**
+     * Nominatim Base URL
+     *
      * @var string
      */
     protected $baseUrl = 'https://nominatim.openstreetmap.org/search?format=json';
-
-    /**
-     * @var array
-     */
-    protected $httpRequestHeader = [
-        'User-Agent: tollwerk/TYPO3-ext-tw_geo',
-    ];
 
     /**
      * Get geocoding result for address string
@@ -67,19 +64,19 @@ class OpenStreetMapService extends AbstractGeocodingService
     public function geocode(string $address = null): ?PositionList
     {
         $parameters = [
-            'q' => $address,
-            'addressdetails' => 1,
+            'q'               => $address,
+            'addressdetails'  => 1,
             'accept-language' => ($language = $this->getCurrentFrontendLanguage()) ? $language->getTwoLetterIsoCode() : 'en',
         ];
 
         $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
-        $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
-        $data = json_decode($result);
+        $result     = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
+        $data       = json_decode($result);
         if (is_array($data) && count($data)) {
             $positions = new PositionList();
             /** @var \stdClass $result */
             foreach ($data as $result) {
-                $address = $result->address;
+                $address  = $result->address;
                 $position = new Position($result->lat, $result->lon);
                 $position->setServiceClass(self::class);
                 $position->setCountryCode($address->country_code);
@@ -90,8 +87,10 @@ class OpenStreetMapService extends AbstractGeocodingService
                 $position->setDisplayName($result->display_name);
                 $positions->add($position);
             }
+
             return $positions;
         }
+
         return null;
     }
 }
