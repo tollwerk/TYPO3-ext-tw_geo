@@ -146,7 +146,7 @@ class OpenStreetMapService extends AbstractGeocodingService
             $position->setServiceClass(self::class);
             $position->setCountryCode($data->address->country_code ?? null);
             $position->setCountryName($data->address->country ?? null);
-            $position->setRegion($data->address->state ?? null);
+            $position->setRegion($data->address->state ?? $data->address->state_district ?? null);
             $position->setLocality($data->address->city ?? $data->address->town ?? $data->address->county ?? null);
             $position->setPostalCode($data->address->postcode ?? null);
             $position->setStreet($data->address->road ?? null);

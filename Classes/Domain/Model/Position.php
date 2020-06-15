@@ -135,6 +135,30 @@ class Position
      * @var bool
      */
     protected $fromSession = false;
+    /**
+     * Country display name part
+     *
+     * @var int
+     */
+    const COUNTRY = 1;
+    /**
+     * Region display name part
+     *
+     * @var int
+     */
+    const REGION = 2;
+    /**
+     * Locality display name part
+     *
+     * @var int
+     */
+    const LOCALITY = 4;
+    /**
+     * Street display name part
+     *
+     * @var int
+     */
+    const STREET = 8;
 
     /**
      * Constructor
@@ -291,11 +315,22 @@ class Position
     /**
      * Return the display name
      *
+     * Control the display name parts to return by providing a part combination constant
+     *
      * @return string Display name
      */
-    public function getDisplayName(): string
+    public function getDisplayName(int $parts = self::COUNTRY | self::LOCALITY | self::REGION | self::STREET): string
     {
-        return $this->displayName;
+        if ($parts == (self::COUNTRY | self::LOCALITY | self::REGION | self::STREET)) {
+            return $this->displayName;
+        }
+
+        return implode(', ', array_filter([
+            ($parts & self::STREET) ? $this->getStreet() : null,
+            ($parts & self::LOCALITY) ? $this->getLocality() : null,
+            ($parts & self::REGION) ? $this->getRegion() : null,
+            ($parts & self::COUNTRY) ? $this->getCountryName() : null,
+        ]));
     }
 
     /**
