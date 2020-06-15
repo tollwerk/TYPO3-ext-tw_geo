@@ -1,19 +1,20 @@
 <?php
+
 /**
- * Schwedenflotte
+ * Tollwerk Geo Tools
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
  * @subpackage Tollwerk\TwGeo\Domain\Model
  * @author     Klaus Fiedler <klaus@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ * @copyright  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -36,7 +37,7 @@
 namespace Tollwerk\TwGeo\Domain\Model;
 
 /**
- * PositionList
+ * Position List
  *
  * A type/class fixed list of Position objects for well defined retrieval of multiple Position objects
  * instead of using an untyped, simple array
@@ -46,21 +47,43 @@ namespace Tollwerk\TwGeo\Domain\Model;
  */
 class PositionList extends \IteratorIterator
 {
+    /**
+     * Constructor
+     *
+     * @param Position ...$positions Positions
+     */
     public function __construct(Position ...$positions)
     {
         parent::__construct(new \ArrayIterator($positions));
     }
 
+    /**
+     * Return the current position
+     *
+     * @return Position Current position
+     */
     public function current(): Position
     {
         return parent::current();
     }
 
-    public function add(Position $position){
+    /**
+     * Add a Position to the list
+     *
+     * @param Position $position Position
+     */
+    public function add(Position $position)
+    {
         $this->getInnerIterator()->append($position);
     }
 
-    public function count() : int {
+    /**
+     * Count the positions in this list
+     *
+     * @return int Number of positions
+     */
+    public function count(): int
+    {
         return $this->getInnerIterator()->count();
     }
 }

@@ -6,14 +6,14 @@
  * @package    Tollwerk\TwGeo
  * @subpackage Tollwerk\TwGeo\Hook
  * @author     Klaus Fiedler <klaus@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ * @copyright  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ *  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
