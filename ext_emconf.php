@@ -11,22 +11,22 @@
  ***************************************************************/
 
 $EM_CONF['tw_geo'] = [
-    'title' => 'tollwerk Geo Tools',
-    'description' => 'Geolocalization, geocoding etc.',
-    'category' => 'misc',
-    'author' => 'tollwerk GmbH',
-    'author_email' => 'info@tollwerk.de',
-    'state' => 'stable',
-    'internal' => '',
-    'uploadfolder' => '0',
-    'createDirs' => '',
+    'title'            => 'tollwerk Geo Tools',
+    'description'      => 'Geolocalization, geocoding etc.',
+    'category'         => 'misc',
+    'author'           => 'tollwerk GmbH',
+    'author_email'     => 'info@tollwerk.de',
+    'state'            => 'stable',
+    'internal'         => '',
+    'uploadfolder'     => '0',
+    'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version' => '2.1.1',
-    'constraints' => [
-        'depends' => [
-            'typo3' => '10.0.0-',
+    'version'          => '2.1.1',
+    'constraints'      => [
+        'depends'   => [
+            'typo3'   => '10.0.0-',
         ],
         'conflicts' => [],
-        'suggests' => [],
+        'suggests'  => [],
     ],
 ];

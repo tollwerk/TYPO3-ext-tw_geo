@@ -1,11 +1,10 @@
 <?php
-
 /**
- * Tollwerk Geo Tools
+ * tw_geo
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
- * @subpackage Tollwerk\TwGeo\Domain\Model
+ * @subpackage Tollwerk\TwGeo\ViewHelpers
  * @author     Klaus Fiedler <klaus@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -14,7 +13,7 @@
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,56 +33,31 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwGeo\Domain\Model;
+namespace Tollwerk\TwGeo\ViewHelpers;
+
+
+use Tollwerk\TwGeo\Utility\GeoUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Position List
- *
- * A type/class fixed list of Position objects for well defined retrieval of multiple Position objects
- * instead of using an untyped, simple array
- *
- * @package    Tollwerk\TwGeo
- * @subpackage Tollwerk\TwGeo\Domain\Model
+ * Class GeolocationViewHelper
+ * @package Tollwerk\TwGeo\ViewHelpers
  */
-class PositionList extends \IteratorIterator
+class GeolocationViewHelper extends AbstractViewHelper
 {
     /**
-     * Constructor
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
      *
-     * @param Position ...$positions Positions
+     * @return bool
      */
-    public function __construct(Position ...$positions)
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        parent::__construct(new \ArrayIterator($positions));
-    }
-
-    /**
-     * Return the current position
-     *
-     * @return Position Current position
-     */
-    public function current(): Position
-    {
-        return parent::current();
-    }
-
-    /**
-     * Add a Position to the list
-     *
-     * @param Position $position Position
-     */
-    public function add(Position $position)
-    {
-        $this->getInnerIterator()->append($position);
-    }
-
-    /**
-     * Count the positions in this list
-     *
-     * @return int Number of positions
-     */
-    public function count(): int
-    {
-        return $this->getInnerIterator()->count();
+        /** @var GeoUtility $geoUtility */
+        $geoUtility = GeneralUtility::makeInstance(GeoUtility::class);
+        return $geoUtility->getGeoLocation();
     }
 }

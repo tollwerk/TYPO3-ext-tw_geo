@@ -1,19 +1,19 @@
 <?php
 /**
- * TwGeo
+ * Tollwerk Geo Tools
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwGeo
  * @subpackage Tollwerk\TwGeo\Service\Geocoding
  * @author     Klaus Fiedler <klaus@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ * @copyright  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ *  Copyright © 2020 Klaus Fiedler <klaus@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -41,7 +41,6 @@ use Tollwerk\TwGeo\Utility\CurlUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class GoogleMapsService
@@ -49,19 +48,47 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 class GoogleMapsService extends AbstractGeocodingService
 {
-    const STATUS_OK = 'OK';
-
     /**
+     * Google Maps API key
+     *
+     * @var string|null
+     */
+    protected $apiKey = null;
+    /**
+     * Google Maps base URL
+     *
      * @var string
      */
     protected $baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
+    /**
+     * Status
+     *
+     * @var string
+     */
+    const STATUS_OK = 'OK';
 
     /**
-     * @var array
+     * Initialization of the service.
+     *
+     * The class have to do a strict check if the service is available.
+     * example: check if the perl interpreter is available which is needed to run an external perl script.
+     *
+     * @return bool TRUE if the service is available
      */
-    protected $httpRequestHeader = [
-        'User-Agent: tollwerk/TYPO3-ext-tw_geo',
-    ];
+    public function init()
+    {
+        $valid = parent::init();
+        if ($valid) {
+            // Check if an API key is configured
+            $typoscript   = GeneralUtility::makeInstance(ObjectManager::class)
+                                          ->get(ConfigurationManager::class)
+                                          ->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+            $this->apiKey = trim($typoscript['plugin.']['tx_twgeo.']['settings.']['googleMaps.']['apiKey']) ?: null;
+            $valid        = strlen($this->apiKey) > 0;
+        }
+
+        return $valid;
+    }
 
     /**
      * Get geocoding result for address string
@@ -72,23 +99,15 @@ class GoogleMapsService extends AbstractGeocodingService
      */
     public function geocode(string $address = null): ?PositionList
     {
-        // Check if all necessary typoscript settings are set and return null if not
-        $typoscript = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class)->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        $googleMapsApiKey = $typoscript['plugin.']['tx_twgeo.']['settings.']['googleMaps.']['apiKey'] ?: null;
-
-        if (!$googleMapsApiKey) {
-            return null;
-        }
-
         // Call web API
         $parameters = [
-            'address' => $address,
-            'key' => $googleMapsApiKey,
+            'address'  => $address,
+            'key'      => $this->apiKey,
             'language' => ($language = $this->getCurrentFrontendLanguage()) ? $language->getTwoLetterIsoCode() : 'en',
         ];
-        $requestUri = $this->baseUrl . '&' . http_build_query($parameters);
-        $result = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
-        $data = json_decode($result);
+        $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
+        $result     = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
+        $data       = json_decode($result);
 
         // Return results
         if ($data->status == self::STATUS_OK && count($data->results)) {
@@ -99,7 +118,7 @@ class GoogleMapsService extends AbstractGeocodingService
                 $position->setServiceClass(self::class);
                 $position->setDisplayName($result->formatted_address);
                 foreach ($result->address_components as $addressComponent) {
-                    $addressComponentType = $addressComponent->types[0];
+                    $addressComponentType  = $addressComponent->types[0];
                     $addressComponentValue = $addressComponent->long_name;
 
                     switch ($addressComponentType) {
@@ -126,8 +145,30 @@ class GoogleMapsService extends AbstractGeocodingService
                 }
                 $positions->append($position);
             }
+
             return $positions;
         }
+
+        return null;
+    }
+
+    /**
+     * Reverse geocode a set of coordinates
+     *
+     * @param float $latitude             Latitude
+     * @param float $longitude            Longitude
+     * @param int $zoom                   Zoom level
+     * @param array|string|null $language Language
+     *
+     * @return Position|null Position
+     */
+    public function reverseGeocode(
+        float $latitude,
+        float $longitude,
+        int $zoom = 16,
+        $language = null
+    ): ?Position {
+        // TODO: Implement reverseGeocode() method.
         return null;
     }
 }

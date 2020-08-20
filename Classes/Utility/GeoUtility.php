@@ -1,4 +1,5 @@
 <?php
+
 /***************************************************************
  *
  *  Copyright notice
@@ -26,10 +27,10 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
+use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Service\Geocoding\AbstractGeocodingService;
 use Tollwerk\TwGeo\Service\Geolocation\AbstractGeolocationService;
-use Tollwerk\TwGeo\Domain\Model\Position;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -37,24 +38,37 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
+/**
+ * Geo Utilities
+ *
+ * @package Tollwerk\TwGeo\Utility
+ */
 class GeoUtility implements SingletonInterface
 {
+    /**
+     * Earth radius
+     *
+     * @var int
+     */
     const EARTH_RADIUS_METERS = 6371000;
 
     /**
      * True if debug mode is enabled for the current user IP
+     *
      * @var bool
      */
     protected $debug = false;
 
     /**
      * IP addresses for which the debug position should be returned instead of the real position
+     *
      * @var array
      */
     protected $debugIps = [];
 
     /**
      * The debug position
+     *
      * @var Position|null
      */
     protected $debugPosition = null;
@@ -74,23 +88,30 @@ class GeoUtility implements SingletonInterface
         $serviceChain = '';
         /** @var AbstractService $serviceObject */
         while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
-            $serviceChain .= ', ' . $serviceObject->getServiceKey();
+            $serviceChain .= ', '.$serviceObject->getServiceKey();
             $serviceObject->init();
             yield $serviceObject;
         }
     }
 
+    /**
+     * Constructor
+     *
+     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException
+     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
+     */
     public function __construct()
     {
         // Get extension configuration TODO: Implement better way to retrieve backend configuration depending on TYPO3 version
         if (class_exists('\TYPO3\CMS\Core\Configuration\ExtensionConfiguration')) {
-            // For TYPO3 v9
+            // For TYPO3 v9+
             $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
-            $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
+            $this->debugIps       = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
 
             if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
                 // @extensionScannerIgnoreLine
-                $this->debug = true;
+                $this->debug         = true;
                 $this->debugPosition = new Position();
                 $this->debugPosition->setDebug(true);
                 $this->debugPosition->setCountryCode($backendConfiguration['debug']['countryCode']);
@@ -103,11 +124,12 @@ class GeoUtility implements SingletonInterface
             }
         } else {
             // For TYPO3 v8
-            $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationUtility::class)->getCurrentConfiguration('tw_geo');
-            $this->debugIps = GeneralUtility::trimExplode(',', $backendConfiguration['debug.ip']['value']);
+            $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationUtility::class)
+                                                  ->getCurrentConfiguration('tw_geo');
+            $this->debugIps       = GeneralUtility::trimExplode(',', $backendConfiguration['debug.ip']['value']);
             if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
                 // @extensionScannerIgnoreLine
-                $this->debug = true;
+                $this->debug         = true;
                 $this->debugPosition = new Position();
                 $this->debugPosition->setDebug(true);
                 $this->debugPosition->setCountryCode($backendConfiguration['debug.countryCode']['value']);
@@ -137,11 +159,11 @@ class GeoUtility implements SingletonInterface
      * Calculates the great-circle distance between two points, with
      * the Vincenty formula.
      *
-     * @param float $latitudeFrom Latitude of start point in [deg decimal]
+     * @param float $latitudeFrom  Latitude of start point in [deg decimal]
      * @param float $longitudeFrom Longitude of start point in [deg decimal]
-     * @param float $latitudeTo Latitude of target point in [deg decimal]
-     * @param float $longitudeTo Longitude of target point in [deg decimal]
-     * @param float $earthRadius Mean earth radius in [m]
+     * @param float $latitudeTo    Latitude of target point in [deg decimal]
+     * @param float $longitudeTo   Longitude of target point in [deg decimal]
+     * @param float $earthRadius   Mean earth radius in [m]
      *
      * @return float Distance between points in [m] (same as earthRadius)
      */
@@ -150,19 +172,22 @@ class GeoUtility implements SingletonInterface
         // convert from degrees to radians
         $latFrom = deg2rad($latitudeFrom);
         $lonFrom = deg2rad($longitudeFrom);
-        $latTo = deg2rad($latitudeTo);
-        $lonTo = deg2rad($longitudeTo);
+        $latTo   = deg2rad($latitudeTo);
+        $lonTo   = deg2rad($longitudeTo);
 
         $lonDelta = $lonTo - $lonFrom;
-        $a = pow(cos($latTo) * sin($lonDelta), 2) +
-            pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
-        $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
+        $a        = pow(cos($latTo) * sin($lonDelta), 2) +
+                    pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
+        $b        = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
 
         $angle = atan2(sqrt($a), $b);
+
         return round($angle * self::EARTH_RADIUS_METERS);
     }
 
     /**
+     * Determines and returns the current position
+     *
      * @return null|Position
      */
     public function getGeoLocation(): ?Position
@@ -185,6 +210,7 @@ class GeoUtility implements SingletonInterface
             /** @var Position $position */
             $position = $sessionUtility->get('geoLocation');
             $position->setFromSession(true);
+
             return $position;
         }
 
@@ -194,12 +220,13 @@ class GeoUtility implements SingletonInterface
             $position = $geolocationService->getGeolocation();
             if ($position instanceof Position) {
                 $sessionUtility->set('geoLocation', $position);
+
                 return $position;
             }
         }
+
         return null;
     }
-
 
     /**
      * Try to geocode an query string
@@ -223,6 +250,7 @@ class GeoUtility implements SingletonInterface
                 // Return first position
                 if ($limit == 1) {
                     $positions->rewind();
+
                     return $positions->current();
                 }
 
@@ -236,9 +264,11 @@ class GeoUtility implements SingletonInterface
                     }
                     $returnPositions->add($position);
                 }
+
                 return $returnPositions;
             }
         }
+
         return null;
     }
 }
