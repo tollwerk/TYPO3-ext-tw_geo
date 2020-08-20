@@ -175,6 +175,11 @@ class GeoUtility implements SingletonInterface
             return $this->debugPosition;
         }
 
+        // Return null if frontend or frontend user is not initialized yet
+        if(!$GLOBALS['TSFE'] || !$GLOBALS['TSFE']->fe_user) {
+            return null;
+        }
+
         // If geolocation was already stored in session, return it
         if ($sessionUtility->get('geoLocation')) {
             /** @var Position $position */
