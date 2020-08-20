@@ -60,11 +60,25 @@ class GeoUtility implements SingletonInterface
     protected $debug = false;
 
     /**
+     * True if user IP is part of excludeIps and geolocation sould be disabled
+     *
+     * @var bool
+     */
+    protected $excluded = false;
+
+    /**
      * IP addresses for which the debug position should be returned instead of the real position
      *
      * @var array
      */
     protected $debugIps = [];
+
+    /**
+     * IP addresses to exclude from geolocation
+     *
+     * @var array
+     */
+    protected $excludeIps = [];
 
     /**
      * The debug position
@@ -108,8 +122,15 @@ class GeoUtility implements SingletonInterface
             // For TYPO3 v9+
             $backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('tw_geo');
             $this->debugIps       = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['ip']);
+            $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['excludeIp']);
 
-            if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+            // Check if geolocation should be disabled by excludeIPs
+            if($backendConfiguration['debug']['excludeIp'] === '*' || in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps)) {
+                $this->excluded = true;
+            }
+
+            // Check if geolocation should return the debug position because of IP
+            if ($backendConfiguration['debug']['ip'] === '*' || in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
                 // @extensionScannerIgnoreLine
                 $this->debug         = true;
                 $this->debugPosition = new Position();
@@ -193,6 +214,9 @@ class GeoUtility implements SingletonInterface
     public function getGeoLocation(): ?Position
     {
         $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
+
+        // If excluded ip, return null
+
 
         // If debug position, return it
         if ($this->debugPosition) {

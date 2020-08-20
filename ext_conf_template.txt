@@ -1,6 +1,9 @@
 debug {
-    # cat=basic/110; type=string; label=Debug IP Addresses:Comma separated list of IP adresses for which to return the debug position.
+    # cat=basic/110; type=string; label=Debug IP Addresses: Comma separated list of IP adresses for which to return the debug position.
     ip = 127.0.0.1
+
+    # cat=basic/111; type=string; label=Exclude IP Addresses: Comma separated list of IP adresses to exclude from geocoding
+    excludeIp =
 
     # cat=basic/120; type=string; label=Debug Country Code
     countryCode = DE
