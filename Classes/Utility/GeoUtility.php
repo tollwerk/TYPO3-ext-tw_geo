@@ -216,7 +216,9 @@ class GeoUtility implements SingletonInterface
         $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
 
         // If excluded ip, return null
-
+        if($this->excluded) {
+            return null;
+        }
 
         // If debug position, return it
         if ($this->debugPosition) {
@@ -224,17 +226,11 @@ class GeoUtility implements SingletonInterface
             return $this->debugPosition;
         }
 
-        // Return null if frontend or frontend user is not initialized yet
-        if(!$GLOBALS['TSFE'] || !$GLOBALS['TSFE']->fe_user) {
-            return null;
-        }
-
         // If geolocation was already stored in session, return it
         if ($sessionUtility->get('geoLocation')) {
             /** @var Position $position */
             $position = $sessionUtility->get('geoLocation');
             $position->setFromSession(true);
-
             return $position;
         }
 
@@ -244,11 +240,9 @@ class GeoUtility implements SingletonInterface
             $position = $geolocationService->getGeolocation();
             if ($position instanceof Position) {
                 $sessionUtility->set('geoLocation', $position);
-
                 return $position;
             }
         }
-
         return null;
     }
 

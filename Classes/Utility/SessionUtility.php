@@ -52,9 +52,7 @@ class SessionUtility implements SingletonInterface
     const KEY = 'tw_geo';
 
     /**
-     * The frontend user session for key 'tw_geo'
-     *
-     * @var array|null
+     * @var array
      */
     protected $session = null;
 
@@ -63,8 +61,9 @@ class SessionUtility implements SingletonInterface
      */
     public function __construct()
     {
-        if (!empty($GLOBALS['TSFE']->fe_user)) {
-            $this->session = $GLOBALS['TSFE']->fe_user->getKey('ses', self::KEY) ?: [];
+        session_start();
+        if (!array_key_exists(self::KEY, $_SESSION)) {
+            $_SESSION[self::KEY] = [];
         }
     }
 
@@ -78,12 +77,11 @@ class SessionUtility implements SingletonInterface
      */
     public function set(string $key, $value): bool
     {
-        if (!is_array($this->session)) {
+        if(!$_SESSION || !is_array($_SESSION[self::KEY])) {
             return false;
         }
-        $this->session[$key] = $value;
-        $GLOBALS['TSFE']->fe_user->setKey('ses', self::KEY, $this->session);
 
+        $_SESSION[self::KEY][$key] = serialize($value);
         return true;
     }
 
@@ -96,6 +94,10 @@ class SessionUtility implements SingletonInterface
      */
     public function get(string $key)
     {
-        return ($this->session && isset($this->session[$key])) ? $this->session[$key] : null;
+        if (!is_array($_SESSION) || !isset($_SESSION[self::KEY][$key])) {
+            return null;
+        }
+
+        return unserialize($_SESSION[self::KEY][$key]);
     }
 }
