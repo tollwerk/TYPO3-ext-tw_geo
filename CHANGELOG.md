@@ -10,18 +10,18 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 - Nothing right now
 
 ## [2.5.2] - 2020-09-17
-### Bugfix
+### Fixed
 - Restore compatibility with TYPO3 versions 8 and 9
 
 ## [2.5.1] - 2020-08-21
-### Bugfix
+### Fixed
 - Fix errors caused by using $GLOBALS['TSFE']->fe_user to cache the geolocation when frontend is not yet available. Use native PHP-Session instead
 - Fix extneions configuration field "excludeIp" not being respected 
 
 ## [2.5.0] - 2020-08-20
 ### Added
 - Add new field "excludeIp" to extension configuration for disabling geolocation for desired IP addresses
-### Bugfix
+### Fixed
 - Fix error when geolocation runs without frontend context (command line, scheduler ..)
 
 
@@ -46,7 +46,7 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 - Add new form element: StaticMap
 ### Changed
 - Refactor javascript
-### Bugfix
+### Fixed
 - Bugfixes for debug mode
 - Bugfixes for using geocoding services in backend context like scheduler tasks
 - Bugfixes for session handling and frontend/backend context 
@@ -67,7 +67,7 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 - Change extension state to stable
 
 ## [1.4.1] - 2019-06-07
-### Bugfix
+### Fixed
 - Fixed errors when trying to work with fe_user session when there is no fe_user
 
 ## [1.4.0] - 2019-04-29
