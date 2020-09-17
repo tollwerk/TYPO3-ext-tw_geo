@@ -76,13 +76,23 @@ call_user_func(
         );
 
         // Configure plugins
-        // @extensionScannerIgnoreLine
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'TwGeo',
-            'Debug',
-            [\Tollwerk\TwGeo\Controller\DebugController::class => 'geolocation, geocoding'],
-            [\Tollwerk\TwGeo\Controller\DebugController::class => 'geolocation, geocoding']
-        );
+        if(version_compare(TYPO3_version, '10.0.0', '<')) {
+            // @extensionScannerIgnoreLine
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'Tollwerk.TwGeo',
+                'Debug',
+                ['Debug' => 'geolocation, geocoding'],
+                ['Debug' => 'geolocation, geocoding']
+            );
+        } else {
+            // @extensionScannerIgnoreLine
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'Tollwerk.TwGeo',
+                'Debug',
+                [\Tollwerk\TwGeo\Controller\DebugController::class => 'geolocation, geocoding'],
+                [\Tollwerk\TwGeo\Controller\DebugController::class => 'geolocation, geocoding']
+            );
+        }
 
         // Register hooks
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1556564992] = \Tollwerk\TwGeo\Hook\FormHook::class;
