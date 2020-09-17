@@ -21,10 +21,10 @@ $EM_CONF['tw_geo'] = [
     'uploadfolder'     => '0',
     'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version'          => '2.2.0',
+    'version'          => '2.5.2',
     'constraints'      => [
         'depends'   => [
-            'typo3'   => '10.0.0-',
+            'typo3'   => '8.7.99-10.99.99',
         ],
         'conflicts' => [],
         'suggests'  => [],
