@@ -9,6 +9,10 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 ## [Planned]
 - Nothing right now
 
+## [2.5.3] - 2020-09-23
+### Fixed
+- Fixed missing $ip argument in GeoUtility->getGeoLocation()
+
 ## [2.5.2] - 2020-09-17
 ### Fixed
 - Restore compatibility with TYPO3 versions 8 and 9

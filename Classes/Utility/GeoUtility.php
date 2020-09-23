@@ -209,9 +209,10 @@ class GeoUtility implements SingletonInterface
     /**
      * Determines and returns the current position
      *
+     * @param string|null $ip
      * @return null|Position
      */
-    public function getGeoLocation(): ?Position
+    public function getGeoLocation(string $ip = null): ?Position
     {
         $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
 
@@ -237,7 +238,7 @@ class GeoUtility implements SingletonInterface
         // Try to get the real position
         /** @var AbstractGeolocationService $geolocationService */
         foreach ($this->getServices('geolocation') as $geolocationService) {
-            $position = $geolocationService->getGeolocation();
+            $position = $geolocationService->getGeolocation($ip);
             if ($position instanceof Position) {
                 $sessionUtility->set('geoLocation', $position);
                 return $position;
