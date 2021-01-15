@@ -125,7 +125,7 @@ class GeoUtility implements SingletonInterface
             $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['excludeIp']);
 
             // Check if geolocation should be disabled by excludeIPs
-            if($backendConfiguration['debug']['excludeIp'] === '*' || in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps)) {
+            if($backendConfiguration['debug']['excludeIp'] === '*' || (strlen($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps))) {
                 $this->excluded = true;
             }
 
