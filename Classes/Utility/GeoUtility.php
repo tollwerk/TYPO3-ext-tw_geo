@@ -102,7 +102,7 @@ class GeoUtility implements SingletonInterface
         $serviceChain = '';
         /** @var AbstractService $serviceObject */
         while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
-            $serviceChain .= ', '.$serviceObject->getServiceKey();
+            $serviceChain .= ', ' . $serviceObject->getServiceKey();
             $serviceObject->init();
             yield $serviceObject;
         }
@@ -125,12 +125,23 @@ class GeoUtility implements SingletonInterface
             $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['excludeIp']);
 
             // Check if geolocation should be disabled by excludeIPs
-            if($backendConfiguration['debug']['excludeIp'] === '*' || (strlen($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps))) {
+            if ($backendConfiguration['debug']['excludeIp'] === '*'
+                || (
+                    strlen($_SERVER['REMOTE_ADDR'])
+                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps)
+                )
+            ) {
                 $this->excluded = true;
             }
 
             // Check if geolocation should return the debug position because of IP
-            if ($backendConfiguration['debug']['ip'] === '*' || in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+            if ($backendConfiguration['debug']['ip'] === '*'
+                || (
+                    strlen($backendConfiguration['debug']['ip'])
+                    && in_array($_SERVER['REMOTE_ADDR'],
+                        $this->debugIps)
+                )
+            ) {
                 // @extensionScannerIgnoreLine
                 $this->debug         = true;
                 $this->debugPosition = new Position();
@@ -145,10 +156,30 @@ class GeoUtility implements SingletonInterface
             }
         } else {
             // For TYPO3 v8
-            $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationUtility::class)
+            $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)
+                                                  ->get(ConfigurationUtility::class)
                                                   ->getCurrentConfiguration('tw_geo');
             $this->debugIps       = GeneralUtility::trimExplode(',', $backendConfiguration['debug.ip']['value']);
-            if (in_array($_SERVER['REMOTE_ADDR'], $this->debugIps)) {
+            $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug.excludeIp']['value']);
+
+            // Check if geolocation should be disabled by excludeIPs
+            if ($backendConfiguration['debug.excludeIp']['value'] === '*'
+                || (
+                    strlen($_SERVER['REMOTE_ADDR'])
+                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps)
+                )
+            ) {
+                $this->excluded = true;
+            }
+
+            // Check if geolocation should return the debug position because of IP
+            if ($backendConfiguration['debug.ip']['value'] === '*'
+                || (
+                    strlen($backendConfiguration['debug.ip']['value'])
+                    && in_array($_SERVER['REMOTE_ADDR'],
+                        $this->debugIps)
+                )
+            ) {
                 // @extensionScannerIgnoreLine
                 $this->debug         = true;
                 $this->debugPosition = new Position();
@@ -210,29 +241,39 @@ class GeoUtility implements SingletonInterface
      * Determines and returns the current position
      *
      * @param string|null $ip
+     *
      * @return null|Position
      */
     public function getGeoLocation(string $ip = null): ?Position
     {
         $sessionUtility = GeneralUtility::makeInstance(SessionUtility::class);
 
-        // If excluded ip, return null
-        if($this->excluded) {
-            return null;
-        }
+        /*
+        * If an ip address is given, we always want to get the real geolocation for it.
+        * So checking for excluded IPs, debug or cache must only be performend when
+        * there is no given ip address.
+        */
+        if ($ip === null) {
+            // If excluded ip, return null
+            if ($this->excluded) {
+                return null;
+            }
 
-        // If debug position, return it
-        if ($this->debugPosition) {
-            // Store posision in session
-            return $this->debugPosition;
-        }
+            // If debug position, return it
+            if ($this->debugPosition) {
+                // Store posision in session
+                return $this->debugPosition;
+            }
 
-        // If geolocation was already stored in session, return it
-        if ($sessionUtility->get('geoLocation')) {
-            /** @var Position $position */
-            $position = $sessionUtility->get('geoLocation');
-            $position->setFromSession(true);
-            return $position;
+            // If geolocation was already stored in session, return it
+            if ($sessionUtility->get('geoLocation')) {
+                die("cached geoLocation!");
+                /** @var Position $position */
+                $position = $sessionUtility->get('geoLocation');
+                $position->setFromSession(true);
+
+                return $position;
+            }
         }
 
         // Try to get the real position
@@ -241,9 +282,11 @@ class GeoUtility implements SingletonInterface
             $position = $geolocationService->getGeolocation($ip);
             if ($position instanceof Position) {
                 $sessionUtility->set('geoLocation', $position);
+
                 return $position;
             }
         }
+
         return null;
     }
 
@@ -251,7 +294,7 @@ class GeoUtility implements SingletonInterface
      * Try to geocode an query string
      *
      * @param string $queryString
-     * @param int $limit If 0, return all
+     * @param int    $limit If 0, return all
      *
      * @return null|Position|PositionList
      */

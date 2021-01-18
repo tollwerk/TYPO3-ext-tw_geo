@@ -46,25 +46,32 @@ class DebugController extends ActionController
     /**
      * @param GeoUtility $geoUtility
      */
-    public function injectGeoUtility(GeoUtility $geoUtility){
+    public function injectGeoUtility(GeoUtility $geoUtility)
+    {
         $this->geoUtility = $geoUtility;
     }
 
     /**
      * Test geolocation services
      *
-     * @param string $queryString
+     * @param string $ip
      */
-    public function geolocationAction(){
-        $this->view->assign('geolocation', $this->geoUtility->getGeoLocation());
+    public function geolocationAction(string $ip = null)
+    {
+        $this->view->assignMultiple([
+            'ip'          => $ip,
+            'geolocation' => $this->geoUtility->getGeoLocation(trim($ip))
+        ]);
     }
+
     /**
      * Test geocoding services
      *
      * @param string $queryString
      */
-    public function geocodingAction(String $queryString = null){
-        if($queryString){
+    public function geocodingAction(string $queryString = null)
+    {
+        if ($queryString) {
             $this->view->assign('geocode', $this->geoUtility->geocode($queryString));
         }
     }
