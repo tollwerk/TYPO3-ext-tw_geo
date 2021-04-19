@@ -187,6 +187,9 @@
      * @param {Number} longitude Longitude
      */
     GeoselectElement.prototype.setLatLon = function (latitude, longitude) {
+        console.log('scripts.js - setLatLon');
+
+
         // Set value of hidden latitude/longitude field
         this.latLon.value = (latitude + ',' + longitude);
         // If we have a Google Map
@@ -211,7 +214,7 @@
 
             // Set map center and zoom in
             this.map.setCenter({lat: latitude, lng: longitude});
-            this.map.setZoom(17);
+            this.map.setZoom(12);
         }
 
         this.container.dispatchEvent(new CustomEvent('geoselect_change', {
