@@ -181,8 +181,6 @@
      * @param longitude
      */
     TwGeoselectElement.prototype.setLatLon = function (latitude, longitude) {
-        console.log('geoselect.js - setLatLon');
-
         // Set value of hidden latitude/longitude field
         this.latLon.value = (latitude + ',' + longitude);
 
