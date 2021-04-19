@@ -9,6 +9,10 @@ Each entry will be separated into four possible groups: **Added**, **Removed**, 
 ## [Planned]
 - Nothing right now
 
+## [2.5.5] - 2021-04-19
+### Changed
+- Changed default map zoom from 17 to 12.
+
 ## [2.5.4] - 2021-01-15
 ### Fixed
 - Fixed checking for `excludeIp` always returning `true` when  `$_SERVER[REMOTE_ADDR']` is empty.
