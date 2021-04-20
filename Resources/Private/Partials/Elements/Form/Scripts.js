@@ -131,7 +131,7 @@
 
         let latLon = this.container.hasAttribute('data-lat-lon') ? this.container.attributes['data-lat-lon'].value.split(',') : [];
         const map = new google.maps.Map(mapElement, {
-            zoom: 12,
+            zoom: 10,
             center: {
                 lat: Number((latLon.length === 2) ? latLon[0] : mapElement.attributes['data-latitude'].value),
                 lng: Number((latLon.length === 2) ? latLon[1] : mapElement.attributes['data-longitude'].value)
@@ -211,7 +211,7 @@
 
             // Set map center and zoom in
             this.map.setCenter({lat: latitude, lng: longitude});
-            this.map.setZoom(12);
+            this.map.setZoom(10);
         }
 
         this.container.dispatchEvent(new CustomEvent('geoselect_change', {
