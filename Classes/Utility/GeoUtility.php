@@ -267,7 +267,6 @@ class GeoUtility implements SingletonInterface
 
             // If geolocation was already stored in session, return it
             if ($sessionUtility->get('geoLocation')) {
-                die("cached geoLocation!");
                 /** @var Position $position */
                 $position = $sessionUtility->get('geoLocation');
                 $position->setFromSession(true);
