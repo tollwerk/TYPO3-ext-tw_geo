@@ -27,16 +27,13 @@
 
 namespace Tollwerk\TwGeo\Service\Geolocation;
 
-use TYPO3\CMS\Core\Service\AbstractService;
 use Tollwerk\TwGeo\Domain\Model\Position;
 
 class PhpGeoIPService extends AbstractGeolocationService
 {
     public function init()
     {
-        if (!function_exists('geoip_record_by_name')) {
-            return false;
-        }
+        return parent::init() && function_exists('geoip_record_by_name');
     }
 
     public function getGeolocation(string $ip = null): ?Position
@@ -53,8 +50,10 @@ class PhpGeoIPService extends AbstractGeolocationService
                 $position->setPostalCode($result['postal_code']);
                 $position->setLatitude($result['latitude']);
                 $position->setLongitude($result['longitude']);
+
                 return ($position->getLatitude() && $position->getLongitude()) ? $position : null;
             }
+
             return null;
         } catch (\Error $error) {
             return null;

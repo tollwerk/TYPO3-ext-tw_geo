@@ -27,26 +27,26 @@
 
 namespace Tollwerk\TwGeo\Service\Geolocation;
 
-use TYPO3\CMS\Core\Service\AbstractService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Tollwerk\TwGeo\Domain\Model\Position;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GeoiplookupService extends AbstractGeolocationService
 {
     public function init()
     {
         $command = 'geoiplookup 127.0.0.1';
-        $output = array();
-        exec($command, $output);
-        return count($output) ? true : false;
+        $output  = [];
+        $status  = null;
+        exec($command, $output, $status);
+
+        return $status == 0;
     }
 
     public function getGeolocation(string $ip = null): ?Position
     {
-        $command = 'geoiplookup '.($ip ?: $_SERVER['REMOTE_ADDR']);
-        $result = [];
-        $status = 0;
+        $command = 'geoiplookup ' . ($ip ?: $_SERVER['REMOTE_ADDR']);
+        $result  = [];
+        $status  = 0;
         exec($command, $result, $status);
 
         try {
@@ -62,7 +62,7 @@ class GeoiplookupService extends AbstractGeolocationService
 
             // If there are less than 8 items in the exploded result we can assume that vital information is missing
             $result = GeneralUtility::trimExplode(',', $result[1]);
-            if(count($result) < 8){
+            if (count($result) < 8) {
                 return null;
             }
 
@@ -75,6 +75,7 @@ class GeoiplookupService extends AbstractGeolocationService
             $position->setPostalCode($result[5]);
             $position->setLatitude($result[6]);
             $position->setLongitude($result[7]);
+
             return $position->getLatitude() && $position->getLongitude() ? $position : null;
         } catch (\Error $error) {
             return null;

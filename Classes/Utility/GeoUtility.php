@@ -1,7 +1,6 @@
 <?php
 
 /***************************************************************
- *
  *  Copyright notice
  *
  *  (c) 2018 Klaus Fiedler <klaus@tollwerk.de>, tollwerk® GmbH
@@ -27,6 +26,7 @@
 
 namespace Tollwerk\TwGeo\Utility;
 
+use Generator;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Service\Geocoding\AbstractGeocodingService;
@@ -88,27 +88,6 @@ class GeoUtility implements SingletonInterface
     protected $debugPosition = null;
 
     /**
-     * Iterate through all available services classes of $type and $subtype
-     * and yield each one separately. Use this for chaining services
-     * until one of them returns a result or no service is left.
-     *
-     * @param string $type
-     * @param string $subtype
-     *
-     * @return \Generator
-     */
-    protected function getServices(string $type, string $subtype = '')
-    {
-        $serviceChain = '';
-        /** @var AbstractService $serviceObject */
-        while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
-            $serviceChain .= ', ' . $serviceObject->getServiceKey();
-            $serviceObject->init();
-            yield $serviceObject;
-        }
-    }
-
-    /**
      * Constructor
      *
      * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException
@@ -126,21 +105,20 @@ class GeoUtility implements SingletonInterface
 
             // Check if geolocation should be disabled by excludeIPs
             if ($backendConfiguration['debug']['excludeIp'] === '*'
-                || (
-                    strlen($_SERVER['REMOTE_ADDR'])
-                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps)
-                )
+                || (strlen($_SERVER['REMOTE_ADDR'])
+                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps))
             ) {
                 $this->excluded = true;
             }
 
             // Check if geolocation should return the debug position because of IP
-            if ($backendConfiguration['debug']['ip'] === '*'
-                || (
-                    strlen($backendConfiguration['debug']['ip'])
-                    && in_array($_SERVER['REMOTE_ADDR'],
-                        $this->debugIps)
-                )
+            if (
+                $backendConfiguration['debug']['ip'] === '*'
+                || (strlen($backendConfiguration['debug']['ip'])
+                    && in_array(
+                        $_SERVER['REMOTE_ADDR'],
+                        $this->debugIps
+                    ))
             ) {
                 // @extensionScannerIgnoreLine
                 $this->debug         = true;
@@ -163,22 +141,22 @@ class GeoUtility implements SingletonInterface
             $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug.excludeIp']['value']);
 
             // Check if geolocation should be disabled by excludeIPs
-            if ($backendConfiguration['debug.excludeIp']['value'] === '*'
-                || (
-                    strlen($_SERVER['REMOTE_ADDR'])
-                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps)
-                )
+            if (
+                $backendConfiguration['debug.excludeIp']['value'] === '*'
+                || (strlen($_SERVER['REMOTE_ADDR'])
+                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps))
             ) {
                 $this->excluded = true;
             }
 
             // Check if geolocation should return the debug position because of IP
-            if ($backendConfiguration['debug.ip']['value'] === '*'
-                || (
-                    strlen($backendConfiguration['debug.ip']['value'])
-                    && in_array($_SERVER['REMOTE_ADDR'],
-                        $this->debugIps)
-                )
+            if (
+                $backendConfiguration['debug.ip']['value'] === '*'
+                || (strlen($backendConfiguration['debug.ip']['value'])
+                    && in_array(
+                        $_SERVER['REMOTE_ADDR'],
+                        $this->debugIps
+                    ))
             ) {
                 // @extensionScannerIgnoreLine
                 $this->debug         = true;
@@ -267,7 +245,9 @@ class GeoUtility implements SingletonInterface
 
             // If geolocation was already stored in session, return it
             if ($sessionUtility->get('geoLocation')) {
-                /** @var Position $position */
+                /**
+                 * @var Position $position
+                 */
                 $position = $sessionUtility->get('geoLocation');
                 $position->setFromSession(true);
 
@@ -276,7 +256,9 @@ class GeoUtility implements SingletonInterface
         }
 
         // Try to get the real position
-        /** @var AbstractGeolocationService $geolocationService */
+        /**
+         * @var AbstractGeolocationService $geolocationService
+         */
         foreach ($this->getServices('geolocation') as $geolocationService) {
             $position = $geolocationService->getGeolocation($ip);
             if ($position instanceof Position) {
@@ -290,6 +272,29 @@ class GeoUtility implements SingletonInterface
     }
 
     /**
+     * Iterate through all available services classes of $type and $subtype
+     * and yield each one separately. Use this for chaining services
+     * until one of them returns a result or no service is left.
+     *
+     * @param string $type
+     * @param string $subtype
+     *
+     * @return Generator
+     */
+    protected function getServices(string $type, string $subtype = '')
+    {
+        $serviceChain = '';
+        /**
+         * @var AbstractService $serviceObject
+         */
+        while (is_object($serviceObject = GeneralUtility::makeInstanceService($type, $subtype, $serviceChain))) {
+            $serviceChain .= ', ' . $serviceObject->getServiceKey();
+            $serviceObject->init();
+            yield $serviceObject;
+        }
+    }
+
+    /**
      * Try to geocode an query string
      *
      * @param string $queryString
@@ -299,7 +304,9 @@ class GeoUtility implements SingletonInterface
      */
     public function geocode(string $queryString, int $limit = 1)
     {
-        /** @var AbstractGeocodingService $geocodingService */
+        /**
+         * @var AbstractGeocodingService $geocodingService
+         */
         foreach ($this->getServices('geocoding') as $geocodingService) {
             $positions = $geocodingService->geocode($queryString, $limit);
             if ($positions instanceof PositionList && $positions->count()) {
