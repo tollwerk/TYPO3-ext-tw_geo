@@ -31,10 +31,13 @@ use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Service\Geocoding\AbstractGeocodingService;
 use Tollwerk\TwGeo\Service\Geolocation\AbstractGeolocationService;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
@@ -90,9 +93,9 @@ class GeoUtility implements SingletonInterface
     /**
      * Constructor
      *
-     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException
-     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws Exception
      */
     public function __construct()
     {
@@ -104,21 +107,12 @@ class GeoUtility implements SingletonInterface
             $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug']['excludeIp']);
 
             // Check if geolocation should be disabled by excludeIPs
-            if ($backendConfiguration['debug']['excludeIp'] === '*'
-                || (strlen($_SERVER['REMOTE_ADDR'])
-                    && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps))
-            ) {
-                $this->excluded = true;
-            }
+            $this->excluded = ($backendConfiguration['debug']['excludeIp'] === '*') ||
+                              (strlen($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], $this->excludeIps));
 
             // Check if geolocation should return the debug position because of IP
-            if (
-                $backendConfiguration['debug']['ip'] === '*'
-                || (strlen($backendConfiguration['debug']['ip'])
-                    && in_array(
-                        $_SERVER['REMOTE_ADDR'],
-                        $this->debugIps
-                    ))
+            if (($backendConfiguration['debug']['ip'] === '*')
+                || (strlen($backendConfiguration['debug']['ip']) && in_array($_SERVER['REMOTE_ADDR'], $this->debugIps))
             ) {
                 // @extensionScannerIgnoreLine
                 $this->debug         = true;
@@ -134,9 +128,10 @@ class GeoUtility implements SingletonInterface
             }
         } else {
             // For TYPO3 v8
-            $backendConfiguration = GeneralUtility::makeInstance(ObjectManager::class)
-                                                  ->get(ConfigurationUtility::class)
-                                                  ->getCurrentConfiguration('tw_geo');
+            $backendConfiguration = GeneralUtility
+                ::makeInstance(ObjectManager::class)
+                ->get(ConfigurationUtility::class)
+                ->getCurrentConfiguration('tw_geo');
             $this->debugIps       = GeneralUtility::trimExplode(',', $backendConfiguration['debug.ip']['value']);
             $this->excludeIps     = GeneralUtility::trimExplode(',', $backendConfiguration['debug.excludeIp']['value']);
 
