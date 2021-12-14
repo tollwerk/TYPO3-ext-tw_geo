@@ -162,11 +162,11 @@ class Geoselect extends Section
 
         // Include google maps javascript if enabled.
         if (!empty($settings['googleMaps']['includeJs']) && !empty($settings['googleMaps']['apiKey'])) {
-            $googleMapsParameters                                             = [
+            $googleMapsParameters = [
                 'key'      => $settings['googleMaps']['apiKey'],
                 'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode(),
             ];
-            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js'] = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&'.http_build_query($googleMapsParameters).'"></script>';
+            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js']      = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&'.http_build_query($googleMapsParameters).'"></script>';
             $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_geoselect_js'] = '<script src="/typo3conf/ext/tw_geo/Resources/Public/tw_geo-default.min.js"></script>';
         }
         $this->setProperty(
@@ -183,8 +183,6 @@ class Geoselect extends Section
         $this->setProperty('mapRestrictions', [
             'countries' => $settings['googleMaps']['restrictions']['countries']
         ]);
-
-
 
 
         // Add search field
