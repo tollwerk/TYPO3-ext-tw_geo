@@ -35,6 +35,7 @@
 
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
+use stdClass;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
@@ -49,6 +50,12 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class GoogleMapsService extends AbstractGeocodingService
 {
     /**
+     * Status
+     *
+     * @var string
+     */
+    const STATUS_OK = 'OK';
+    /**
      * Google Maps API key
      *
      * @var string|null
@@ -60,12 +67,6 @@ class GoogleMapsService extends AbstractGeocodingService
      * @var string
      */
     protected $baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
-    /**
-     * Status
-     *
-     * @var string
-     */
-    const STATUS_OK = 'OK';
 
     /**
      * Initialization of the service.
@@ -105,14 +106,14 @@ class GoogleMapsService extends AbstractGeocodingService
             'key'      => $this->apiKey,
             'language' => ($language = $this->getCurrentFrontendLanguage()) ? $language->getTwoLetterIsoCode() : 'en',
         ];
-        $requestUri = $this->baseUrl.'&'.http_build_query($parameters);
+        $requestUri = $this->baseUrl . '&' . http_build_query($parameters);
         $result     = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
         $data       = json_decode($result);
 
         // Return results
         if ($data->status == self::STATUS_OK && count($data->results)) {
             $positions = new PositionList();
-            /** @var \stdClass $result */
+            /** @var stdClass $result */
             foreach ($data->results as $result) {
                 $position = new Position($result->geometry->location->lat, $result->geometry->location->lng);
                 $position->setServiceClass(self::class);
@@ -155,10 +156,10 @@ class GoogleMapsService extends AbstractGeocodingService
     /**
      * Reverse geocode a set of coordinates
      *
-     * @param float $latitude             Latitude
-     * @param float $longitude            Longitude
-     * @param int $zoom                   Zoom level
-     * @param array|string|null $language Language
+     * @param float             $latitude  Latitude
+     * @param float             $longitude Longitude
+     * @param int               $zoom      Zoom level
+     * @param array|string|null $language  Language
      *
      * @return Position|null Position
      */

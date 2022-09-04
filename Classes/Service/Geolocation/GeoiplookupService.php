@@ -27,6 +27,7 @@
 
 namespace Tollwerk\TwGeo\Service\Geolocation;
 
+use Error;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -77,7 +78,7 @@ class GeoiplookupService extends AbstractGeolocationService
             $position->setLongitude($result[7]);
 
             return $position->getLatitude() && $position->getLongitude() ? $position : null;
-        } catch (\Error $error) {
+        } catch (Error $error) {
             return null;
         }
     }

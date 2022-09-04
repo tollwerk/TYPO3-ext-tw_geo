@@ -27,6 +27,7 @@
 
 namespace Tollwerk\TwGeo\Service\Geolocation;
 
+use Error;
 use Tollwerk\TwGeo\Domain\Model\Position;
 
 class PhpGeoIPService extends AbstractGeolocationService
@@ -55,7 +56,7 @@ class PhpGeoIPService extends AbstractGeolocationService
             }
 
             return null;
-        } catch (\Error $error) {
+        } catch (Error $error) {
             return null;
         }
     }

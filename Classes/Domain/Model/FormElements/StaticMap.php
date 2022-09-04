@@ -56,13 +56,13 @@ class StaticMap extends GenericFormElement
      * @var array
      */
     protected $properties = [
-        'latitude' => 0,
+        'latitude'  => 0,
         'longitude' => 0,
-        'zoom' => 10,
-        'apiKey' => '',
-        'size' => '640x320',
-        'scale' => 2,
-        'maptype' => 'roadmap',
+        'zoom'      => 10,
+        'apiKey'    => '',
+        'size'      => '640x320',
+        'scale'     => 2,
+        'maptype'   => 'roadmap',
     ];
 
     /**
@@ -75,8 +75,8 @@ class StaticMap extends GenericFormElement
     public function initializeFormElement()
     {
         // Get typoscript settings for tw_geo
-        $settings = GeneralUtility::makeInstance(ConfigurationManager::class)
-            ->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $settings           = GeneralUtility::makeInstance(ConfigurationManager::class)
+                                            ->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
         $googleMapsSettings = $settings['plugin.']['tx_twgeo.']['settings.']['googleMaps.'];
         $this->setProperty('apiKey', $googleMapsSettings['apiKey']);
     }

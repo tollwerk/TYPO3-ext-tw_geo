@@ -36,6 +36,9 @@
 
 namespace Tollwerk\TwGeo\Domain\Model;
 
+use ArrayIterator;
+use IteratorIterator;
+
 /**
  * Position List
  *
@@ -45,7 +48,7 @@ namespace Tollwerk\TwGeo\Domain\Model;
  * @package    Tollwerk\TwGeo
  * @subpackage Tollwerk\TwGeo\Domain\Model
  */
-class PositionList extends \IteratorIterator
+class PositionList extends IteratorIterator
 {
     /**
      * Constructor
@@ -54,7 +57,7 @@ class PositionList extends \IteratorIterator
      */
     public function __construct(Position ...$positions)
     {
-        parent::__construct(new \ArrayIterator($positions));
+        parent::__construct(new ArrayIterator($positions));
     }
 
     /**

@@ -46,96 +46,6 @@ namespace Tollwerk\TwGeo\Domain\Model;
 class Position
 {
     /**
-     * Country code
-     *
-     * @var string
-     */
-    protected $countryCode = null;
-
-    /**
-     * Country name
-     *
-     * @var string
-     */
-    protected $countryName = null;
-
-    /**
-     * Region
-     *
-     * @var string
-     */
-    protected $region = null;
-
-    /**
-     * Locality
-     *
-     * @var string
-     */
-    protected $locality = null;
-
-    /**
-     * Postal code
-     *
-     * @var string
-     */
-    protected $postalCode = null;
-
-    /**
-     * Street address
-     *
-     * @var string
-     */
-    protected $street = null;
-
-    /**
-     * Street number
-     *
-     * @var string
-     */
-    protected $streetNumber = null;
-
-    /**
-     * Latitude
-     *
-     * @var float|null
-     */
-    protected $latitude = null;
-
-    /**
-     * Longitude
-     *
-     * @var float
-     */
-    protected $longitude = null;
-
-    /**
-     * Display name
-     *
-     * @var string
-     */
-    protected $displayName = null;
-
-    /**
-     * If true, this position is a debug position
-     *
-     * @var bool
-     */
-    protected $debug = false;
-
-    /**
-     * Service class
-     *
-     * @var string
-     */
-    protected $serviceClass = null;
-
-    /**
-     * If true, position was retrieved from the frontend user session
-     *
-     * @var bool
-     */
-    protected $fromSession = false;
-    /**
      * Country display name part
      *
      * @var int
@@ -159,6 +69,84 @@ class Position
      * @var int
      */
     const STREET = 8;
+    /**
+     * Country code
+     *
+     * @var string
+     */
+    protected $countryCode = null;
+    /**
+     * Country name
+     *
+     * @var string
+     */
+    protected $countryName = null;
+    /**
+     * Region
+     *
+     * @var string
+     */
+    protected $region = null;
+    /**
+     * Locality
+     *
+     * @var string
+     */
+    protected $locality = null;
+    /**
+     * Postal code
+     *
+     * @var string
+     */
+    protected $postalCode = null;
+    /**
+     * Street address
+     *
+     * @var string
+     */
+    protected $street = null;
+    /**
+     * Street number
+     *
+     * @var string
+     */
+    protected $streetNumber = null;
+    /**
+     * Latitude
+     *
+     * @var float|null
+     */
+    protected $latitude = null;
+    /**
+     * Longitude
+     *
+     * @var float
+     */
+    protected $longitude = null;
+    /**
+     * Display name
+     *
+     * @var string
+     */
+    protected $displayName = null;
+    /**
+     * If true, this position is a debug position
+     *
+     * @var bool
+     */
+    protected $debug = false;
+    /**
+     * Service class
+     *
+     * @var string
+     */
+    protected $serviceClass = null;
+    /**
+     * If true, position was retrieved from the frontend user session
+     *
+     * @var bool
+     */
+    protected $fromSession = false;
 
     /**
      * Constructor
@@ -193,66 +181,6 @@ class Position
     }
 
     /**
-     * Return the country name
-     *
-     * @return string Country name
-     */
-    public function getCountryName(): ?string
-    {
-        return $this->countryName;
-    }
-
-    /**
-     * Set the country name
-     *
-     * @param string $countryName Country name
-     */
-    public function setCountryName(string $countryName = null)
-    {
-        $this->countryName = $countryName;
-    }
-
-    /**
-     * Return the region
-     *
-     * @return string Region
-     */
-    public function getRegion(): ?string
-    {
-        return $this->region;
-    }
-
-    /**
-     * Set the region
-     *
-     * @param string $region Region
-     */
-    public function setRegion(string $region = null)
-    {
-        $this->region = $region;
-    }
-
-    /**
-     * Return the Location
-     *
-     * @return string Location
-     */
-    public function getLocality(): ?string
-    {
-        return $this->locality;
-    }
-
-    /**
-     * Set the location
-     *
-     * @param string $locality Location
-     */
-    public function setLocality(string $locality = null)
-    {
-        $this->locality = $locality;
-    }
-
-    /**
      * Return the postal code
      *
      * @return string Postal code
@@ -270,26 +198,6 @@ class Position
     public function setPostalCode(string $postalCode = null)
     {
         $this->postalCode = $postalCode;
-    }
-
-    /**
-     * Return the street address
-     *
-     * @return string Street address
-     */
-    public function getStreet(): string
-    {
-        return $this->street;
-    }
-
-    /**
-     * Set the street address
-     *
-     * @param string $street Street address
-     */
-    public function setStreet(string $street = null)
-    {
-        $this->street = $street;
     }
 
     /**
@@ -341,6 +249,86 @@ class Position
     public function setDisplayName(string $displayName = null)
     {
         $this->displayName = $displayName;
+    }
+
+    /**
+     * Return the street address
+     *
+     * @return string Street address
+     */
+    public function getStreet(): string
+    {
+        return $this->street;
+    }
+
+    /**
+     * Set the street address
+     *
+     * @param string $street Street address
+     */
+    public function setStreet(string $street = null)
+    {
+        $this->street = $street;
+    }
+
+    /**
+     * Return the Location
+     *
+     * @return string Location
+     */
+    public function getLocality(): ?string
+    {
+        return $this->locality;
+    }
+
+    /**
+     * Set the location
+     *
+     * @param string $locality Location
+     */
+    public function setLocality(string $locality = null)
+    {
+        $this->locality = $locality;
+    }
+
+    /**
+     * Return the region
+     *
+     * @return string Region
+     */
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    /**
+     * Set the region
+     *
+     * @param string $region Region
+     */
+    public function setRegion(string $region = null)
+    {
+        $this->region = $region;
+    }
+
+    /**
+     * Return the country name
+     *
+     * @return string Country name
+     */
+    public function getCountryName(): ?string
+    {
+        return $this->countryName;
+    }
+
+    /**
+     * Set the country name
+     *
+     * @param string $countryName Country name
+     */
+    public function setCountryName(string $countryName = null)
+    {
+        $this->countryName = $countryName;
     }
 
     /**

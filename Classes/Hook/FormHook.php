@@ -41,6 +41,7 @@ use Tollwerk\TwGeo\Domain\Model\FormElements\Geoselect;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\GeoUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Form\Domain\Model\Renderable\RootRenderableInterface;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 
 /**
@@ -50,17 +51,32 @@ use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 class FormHook
 {
     /**
+     * @param FormRuntime             $formRuntime
+     * @param RootRenderableInterface $renderable
+     *
+     * @return void
+     */
+    public function beforeRendering(
+        FormRuntime $formRuntime,
+        RootRenderableInterface $renderable
+    ) {
+        if ($renderable->getType() == 'Geoselect') {
+            $this->checkGeoselectField($formRuntime, $renderable);
+        }
+    }
+
+    /**
      * Check the geo select field
      *
      * @param FormRuntime $formRuntime
-     * @param Geoselect $renderable
+     * @param Geoselect   $renderable
      *
      * @return bool
      */
     protected function checkGeoselectField(FormRuntime $formRuntime, Geoselect $renderable)
     {
         // If no search string is given, we can abort all further processing
-        $searchString = $formRuntime->getElementValue($renderable->getIdentifier().'-search');
+        $searchString = $formRuntime->getElementValue($renderable->getIdentifier() . '-search');
         if (!$searchString) {
             return false;
         }
@@ -76,29 +92,14 @@ class FormHook
             if ($positions->count()) {
                 $positions->rewind();
                 $firstPosition = $positions->current();
-                $renderable->setLatLon($firstPosition->getLatitude().','.$firstPosition->getLongitude());
+                $renderable->setLatLon($firstPosition->getLatitude() . ',' . $firstPosition->getLongitude());
             }
         }
 
-        $latLon = $formRuntime->getElementValue($renderable->getIdentifier().'-position');
+        $latLon = $formRuntime->getElementValue($renderable->getIdentifier() . '-position');
         if ($latLon) {
             $renderable->setLatLon($latLon);
         }
 
-    }
-
-    /**
-     * @param \TYPO3\CMS\Form\Domain\Runtime\FormRuntime $formRuntime
-     * @param \TYPO3\CMS\Form\Domain\Model\Renderable\RootRenderableInterface $renderable
-     *
-     * @return void
-     */
-    public function beforeRendering(
-        \TYPO3\CMS\Form\Domain\Runtime\FormRuntime $formRuntime,
-        \TYPO3\CMS\Form\Domain\Model\Renderable\RootRenderableInterface $renderable
-    ) {
-        if ($renderable->getType() == 'Geoselect') {
-            $this->checkGeoselectField($formRuntime, $renderable);
-        }
     }
 }

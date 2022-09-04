@@ -32,6 +32,7 @@ interface GeolocationInterface
 {
     /**
      * Get geolocation of the user IP address
+     *
      * @param string|null $ip
      *
      * @return null|Position

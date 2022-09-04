@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwGeo\Service\Geocoding;
 
+use stdClass;
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
 use Tollwerk\TwGeo\Utility\CurlUtility;
@@ -75,12 +76,12 @@ class OpenStreetMapService extends AbstractGeocodingService
             'accept-language' => ($language = $this->getCurrentFrontendLanguage()) ? $language->getTwoLetterIsoCode() : 'en',
         ];
 
-        $requestUri = $this->geocodeUrl.'&'.http_build_query($parameters);
+        $requestUri = $this->geocodeUrl . '&' . http_build_query($parameters);
         $result     = CurlUtility::httpRequest($requestUri, $this->httpRequestHeader);
         $data       = json_decode($result);
         if (is_array($data) && count($data)) {
             $positions = new PositionList();
-            /** @var \stdClass $result */
+            /** @var stdClass $result */
             foreach ($data as $result) {
                 $address  = $result->address;
                 $position = new Position($result->lat, $result->lon);
@@ -103,10 +104,10 @@ class OpenStreetMapService extends AbstractGeocodingService
     /**
      * Reverse geocode a set of coordinates
      *
-     * @param float $latitude             Latitude
-     * @param float $longitude            Longitude
-     * @param int $zoom                   Zoom level
-     * @param array|string|null $language Language
+     * @param float             $latitude  Latitude
+     * @param float             $longitude Longitude
+     * @param int               $zoom      Zoom level
+     * @param array|string|null $language  Language
      *
      * @return Position|null Position
      */
@@ -125,7 +126,7 @@ class OpenStreetMapService extends AbstractGeocodingService
         if (!empty($languages)) {
             $parameters['accept-language'] = implode(',', $languages);
         }
-        $requestUri = $this->reverseGeocodeUrl.'&'.http_build_query($parameters);
+        $requestUri = $this->reverseGeocodeUrl . '&' . http_build_query($parameters);
         $status     = null;
         $result     = CurlUtility::httpRequest(
             $requestUri,
@@ -173,7 +174,7 @@ class OpenStreetMapService extends AbstractGeocodingService
             'lon'  => $longitude,
             'zoom' => 3
         ];
-        $requestUri = $this->reverseGeocodeUrl.'&'.http_build_query($parameters);
+        $requestUri = $this->reverseGeocodeUrl . '&' . http_build_query($parameters);
         $status     = null;
         $result     = CurlUtility::httpRequest(
             $requestUri,

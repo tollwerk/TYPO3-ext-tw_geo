@@ -162,16 +162,16 @@ class Geoselect extends Section
 
         // Include google maps javascript if enabled.
         if (!empty($settings['googleMaps']['includeJs']) && !empty($settings['googleMaps']['apiKey'])) {
-            $googleMapsParameters = [
+            $googleMapsParameters                                                  = [
                 'key'      => $settings['googleMaps']['apiKey'],
                 'language' => $GLOBALS['TYPO3_REQUEST']->getAttribute('language')->getTwoLetterIsoCode(),
             ];
-            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js']      = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&'.http_build_query($googleMapsParameters).'"></script>';
+            $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_maps_js']      = '<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&' . http_build_query($googleMapsParameters) . '"></script>';
             $GLOBALS['TSFE']->additionalFooterData['tx_twgeo_google_geoselect_js'] = '<script src="/typo3conf/ext/tw_geo/Resources/Public/tw_geo-default.min.js"></script>';
         }
         $this->setProperty(
             'mapMarker',
-            GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$settings['googleMaps']['mapMarker']
+            GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $settings['googleMaps']['mapMarker']
         );
         $this->setProperty(
             'mapCenter',
@@ -186,7 +186,7 @@ class Geoselect extends Section
 
 
         // Add search field
-        $this->searchField = $this->createElement($this->identifier.'-search', 'Text');
+        $this->searchField = $this->createElement($this->identifier . '-search', 'Text');
 //        $this->searchField->setLabel(
 //            LocalizationUtility::translate(
 //                'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.search.label',
@@ -195,10 +195,10 @@ class Geoselect extends Section
 //        );
 
         // Add hidden latitude;longitude field
-        $this->latLonField = $this->createElement($this->identifier.'-lat-lon', 'Hidden');
+        $this->latLonField = $this->createElement($this->identifier . '-lat-lon', 'Hidden');
 
         // Add position field for selection found positions based on the search result. Only used in non-js version.
-        $this->positionField = $this->createElement($this->identifier.'-position', 'SingleSelect');
+        $this->positionField = $this->createElement($this->identifier . '-position', 'SingleSelect');
         $this->positionField->setLabel(
             LocalizationUtility::translate(
                 'LLL:EXT:tw_geo/Resources/Private/Language/locallang_forms.xlf:geoselect.positions.label',

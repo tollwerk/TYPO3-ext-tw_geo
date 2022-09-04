@@ -29,6 +29,7 @@ namespace Tollwerk\TwGeo\Service\Geocoding;
 
 use Tollwerk\TwGeo\Domain\Model\Position;
 use Tollwerk\TwGeo\Domain\Model\PositionList;
+use Traversable;
 
 interface GeocodingInterface
 {
@@ -37,17 +38,17 @@ interface GeocodingInterface
      *
      * @param string $queryString
      *
-     * @return \Traversable
+     * @return Traversable
      */
     public function geocode(string $queryString = null): ?PositionList;
 
     /**
      * Reverse geocode a set of coordinates
      *
-     * @param float $latitude             Latitude
-     * @param float $longitude            Longitude
-     * @param int $zoom                   Zoom level
-     * @param array|string|null $language Language
+     * @param float             $latitude  Latitude
+     * @param float             $longitude Longitude
+     * @param int               $zoom      Zoom level
+     * @param array|string|null $language  Language
      *
      * @return Position|null Position
      */

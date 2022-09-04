@@ -36,6 +36,7 @@
 namespace Tollwerk\TwGeo\ViewHelpers\Format;
 
 
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -50,31 +51,35 @@ class DistanceViewHelper extends AbstractViewHelper
     ];
 
     /**
+     * @param array                     $arguments
+     * @param Closure                  $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return bool
+     */
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $value            = intval($renderChildrenClosure());
+        $currentUnitIndex = isset($arguments['startUnitOffset']) ? intval($arguments['startUnitOffset']) : 0;
+        $unit             = self::$units[$currentUnitIndex];
+
+        while (($newValue = $value / 1000) >= 1 && array_key_exists(++$currentUnitIndex, self::$units)) {
+            $value = floor($newValue);
+            $unit  = self::$units[$currentUnitIndex];
+        }
+
+        return $value . ' ' . $unit;
+    }
+
+    /**
      * Initialize arguments
      */
     public function initializeArguments()
     {
         parent::initializeArguments();
         $this->registerArgument('startUnitOffset', 'integer', '0 = meters. 1 = kilometer etc. Step is 1000.', false, 0);
-    }
-
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
-     * @return bool
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
-        $value = intval($renderChildrenClosure());
-        $currentUnitIndex = isset($arguments['startUnitOffset']) ? intval($arguments['startUnitOffset']) : 0;
-        $unit = self::$units[$currentUnitIndex];
-
-        while (($newValue = $value / 1000) >= 1 && array_key_exists(++$currentUnitIndex, self::$units)) {
-            $value = floor($newValue);
-            $unit = self::$units[$currentUnitIndex];
-        }
-        return $value.' '.$unit;
     }
 }

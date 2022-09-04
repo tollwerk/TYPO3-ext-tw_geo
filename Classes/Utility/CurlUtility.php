@@ -11,12 +11,6 @@ namespace Tollwerk\TwGeo\Utility;
 class CurlUtility
 {
     /**
-     * SSL certificate validation
-     *
-     * @var boolean
-     */
-    protected static $_verify = true;
-    /**
      * GET request
      *
      * @var string
@@ -40,6 +34,12 @@ class CurlUtility
      * @var string
      */
     const PUT = 'PUT';
+    /**
+     * SSL certificate validation
+     *
+     * @var boolean
+     */
+    protected static $_verify = true;
 
     /**
      * Enable / disable the SSL certificate validation
@@ -58,12 +58,12 @@ class CurlUtility
     /**
      * Make a HTTP request
      *
-     * @param string $url     Endpoint / URL
-     * @param array $header   Header
-     * @param string $method  Method
-     * @param string $body    Body
-     * @param boolean $debug  Output debugging information
-     * @param int $httpStatus HTTP status code
+     * @param string  $url        Endpoint / URL
+     * @param array   $header     Header
+     * @param string  $method     Method
+     * @param string  $body       Body
+     * @param boolean $debug      Output debugging information
+     * @param int     $httpStatus HTTP status code
      *
      * @return string Result
      */

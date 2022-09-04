@@ -47,12 +47,6 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 abstract class AbstractGeocodingService extends AbstractService implements GeocodingInterface
 {
     /**
-     * HTTP Headers
-     *
-     * @var array
-     */
-    protected $httpRequestHeader = ['User-Agent: tollwerk/TYPO3-ext-tw_geo'];
-    /**
      * Country to language mapping
      *
      * @var string[][]
@@ -309,6 +303,12 @@ abstract class AbstractGeocodingService extends AbstractService implements Geoco
         'ZM' => ['en'],
         'ZW' => ['en', 'sn', 'nd']
     ];
+    /**
+     * HTTP Headers
+     *
+     * @var array
+     */
+    protected $httpRequestHeader = ['User-Agent: tollwerk/TYPO3-ext-tw_geo'];
 
     /**
      * Return the current frontend language
