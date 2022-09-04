@@ -36,6 +36,7 @@
 namespace Tollwerk\TwGeo\Utility;
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Session Utility
@@ -52,15 +53,33 @@ class SessionUtility implements SingletonInterface
     const KEY = 'tw_geo';
 
     /**
-     * @var array
+     * Frontend User Session
+     *
+     * @var array|null
      */
     protected $session = null;
+
+    /**
+     * Whether there's a TYPO3 frontend user available
+     *
+     * @var bool
+     */
+    protected $hasFeUser = false;
 
     /**
      * Constructor
      */
     public function __construct()
     {
+        // If there's a TYPO3 frontend user available
+        $this->hasFeUser = !empty($GLOBALS['TSFE']->fe_user) && ($GLOBALS['TSFE']->fe_user instanceof FrontendUserAuthentication);
+        if ($this->hasFeUser) {
+            $this->session = $GLOBALS['TSFE']->fe_user->getKey('ses', self::KEY) ?: [];
+
+            return;
+        }
+
+        // Use standard PHP session
         session_start();
         if (!array_key_exists(self::KEY, $_SESSION)) {
             $_SESSION[self::KEY] = [];
@@ -71,17 +90,31 @@ class SessionUtility implements SingletonInterface
      * Set a session value
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return bool Returns true if value could be stored
      */
     public function set(string $key, $value): bool
     {
-        if(!$_SESSION || !is_array($_SESSION[self::KEY])) {
+        // If there's a TYPO3 frontend user available
+        if ($this->hasFeUser) {
+            if (!is_array($this->session)) {
+                return false;
+            }
+
+            $this->session[$key] = $value;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', self::KEY, $this->session);
+
+            return true;
+        }
+
+        // Use standard PHP session
+        if (!$_SESSION || !is_array($_SESSION[self::KEY])) {
             return false;
         }
 
         $_SESSION[self::KEY][$key] = serialize($value);
+
         return true;
     }
 
@@ -94,6 +127,12 @@ class SessionUtility implements SingletonInterface
      */
     public function get(string $key)
     {
+        // If there's a TYPO3 frontend user available
+        if ($this->hasFeUser) {
+            return ($this->session && isset($this->session[$key])) ? $this->session[$key] : null;
+        }
+
+        // Use standard PHP session
         if (!is_array($_SESSION) || !isset($_SESSION[self::KEY][$key])) {
             return null;
         }

@@ -188,7 +188,6 @@ class GeoUtility implements SingletonInterface
      * @param float $longitudeFrom Longitude of start point in [deg decimal]
      * @param float $latitudeTo    Latitude of target point in [deg decimal]
      * @param float $longitudeTo   Longitude of target point in [deg decimal]
-     * @param float $earthRadius   Mean earth radius in [m]
      *
      * @return float Distance between points in [m] (same as earthRadius)
      */
