@@ -191,6 +191,7 @@
     GeoselectElement.prototype.setLatLon = function (latitude, longitude) {
         // Set value of hidden latitude/longitude field
         this.latLon.value = (`${latitude},${longitude}`);
+        this.latLon.dispatchEvent(new Event('change'));
         // If we have a Google Map
         if (this.map) {
             // Add map marker after removing the old one
